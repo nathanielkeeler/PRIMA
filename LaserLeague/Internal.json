@@ -1,1 +1,72 @@
-{}
+{
+  "MeshCube|2021-10-12T09:36:54.578Z|30568": {
+    "ƒ.MeshCube": {
+      "idResource": "MeshCube|2021-10-12T09:36:54.578Z|30568",
+      "name": "Cube",
+      "type": "MeshCube"
+    }
+  },
+  "Material|2021-10-12T09:37:09.862Z|78672": {
+    "ƒ.Material": {
+      "name": "MaterialRED",
+      "idResource": "Material|2021-10-12T09:37:09.862Z|78672",
+      "shader": "ShaderUniColor",
+      "coat": {
+        "ƒ.CoatColored": {
+          "color": "[1, 0, 0, 1]"
+        }
+      }
+    }
+  },
+  "Graph|2021-10-12T09:37:44.374Z|63106": {
+    "ƒ.Graph": {
+      "name": "Scene",
+      "components": {},
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Cube",
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshCube|2021-10-12T09:36:54.578Z|30568",
+                    "pivot": {
+                      "translation": "[0, 0, 0]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2021-10-12T09:37:09.862Z|78672"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2021-10-12T09:37:44.374Z|63106",
+      "type": "Graph"
+    }
+  }
+}
