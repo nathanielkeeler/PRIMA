@@ -1,0 +1,50 @@
+LASER LEAGUE
+------------
+
+Arena
+    - Boundaries
+    - Color
+    - Choose where is zero and what is 1?
+        - Coordinate system
+
+Laser Objects
+    - Color (r/b/neutral)
+    - Center Object (Collider)
+    - Arms
+    - Position
+    - Behaviour (Movement, Color change)
+    - Timer
+
+Agents
+    - Status (alive/dead)
+    - Abilities (Variations)
+    - Team Color
+    - Body
+    - Position
+    - Playermarker
+
+Items
+    - Position
+    - Behaviour/Effect
+
+
+
+Structure
+---------
+
+- root (Graph)
+    |--- Laserformation
+        |--- Laser 1
+            |--- Center
+            |--- Arms
+        |--- Laser 2
+
+    |--- Agents
+        |--- Agent 1
+        |--- Agent 2
+
+    |--- Items
+
+    |--- Arena
+        |--- Ground
+        |--- Borders
