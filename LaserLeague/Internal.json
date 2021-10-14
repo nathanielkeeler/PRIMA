@@ -1,4 +1,45 @@
 {
+  "MeshQuad|2021-10-13T11:49:37.007Z|96061": {
+    "ƒ.MeshQuad": {
+      "idResource": "MeshQuad|2021-10-13T11:49:37.007Z|96061",
+      "name": "MeshQuad",
+      "type": "MeshQuad"
+    }
+  },
+  "Material|2021-10-13T11:52:44.848Z|58679": {
+    "ƒ.Material": {
+      "name": "MaterialColor",
+      "idResource": "Material|2021-10-13T11:52:44.848Z|58679",
+      "shader": "ShaderUniColor",
+      "coat": {
+        "ƒ.CoatColored": {
+          "color": "[1, 1, 1, 1]"
+        }
+      }
+    }
+  },
+  "MeshPolygon|2021-10-13T12:13:09.169Z|52323": {
+    "ƒ.MeshPolygon": {
+      "idResource": "MeshPolygon|2021-10-13T12:13:09.169Z|52323",
+      "name": "LaserCenter",
+      "type": "MeshPolygon",
+      "shape": {
+        "ƒ.Vector2": [
+          "[-1, -1]",
+          "[1, -1]",
+          "[0, 1]"
+        ]
+      },
+      "fitTexture": true
+    }
+  },
+  "MeshPyramid|2021-10-13T12:53:44.103Z|73455": {
+    "ƒ.MeshPyramid": {
+      "idResource": "MeshPyramid|2021-10-13T12:53:44.103Z|73455",
+      "name": "MeshPyramid",
+      "type": "MeshPyramid"
+    }
+  },
   "Graph|2021-10-13T11:16:55.130Z|04635": {
     "ƒ.Graph": {
       "name": "Scene",
@@ -27,7 +68,7 @@
                 {
                   "ƒ.ComponentMaterial": {
                     "sortForAlpha": false,
-                    "clrPrimary": "[1, 0.9254901960784314, 0.8392156862745098, 1]",
+                    "clrPrimary": "[0.403921568627451, 0.5568627450980392, 0.6352941176470588, 1]",
                     "clrSecondary": "[1, 1, 1, 1]",
                     "pivot": {
                       "translation": "[0, 0]",
@@ -53,7 +94,22 @@
               {
                 "ƒ.Node": {
                   "name": "Laser1",
-                  "components": {},
+                  "components": {
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, -1, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
+                        }
+                      }
+                    ]
+                  },
                   "children": [
                     {
                       "ƒ.Node": {
@@ -212,8 +268,7 @@
                                       "idMaterial": "Material|2021-10-13T11:52:44.848Z|58679"
                                     }
                                   }
-                                ],
-                                "ComponentTransform": []
+                                ]
                               },
                               "children": []
                             }
@@ -279,47 +334,6 @@
       ],
       "idResource": "Graph|2021-10-13T11:16:55.130Z|04635",
       "type": "Graph"
-    }
-  },
-  "MeshQuad|2021-10-13T11:49:37.007Z|96061": {
-    "ƒ.MeshQuad": {
-      "idResource": "MeshQuad|2021-10-13T11:49:37.007Z|96061",
-      "name": "MeshQuad",
-      "type": "MeshQuad"
-    }
-  },
-  "Material|2021-10-13T11:52:44.848Z|58679": {
-    "ƒ.Material": {
-      "name": "MaterialColor",
-      "idResource": "Material|2021-10-13T11:52:44.848Z|58679",
-      "shader": "ShaderUniColor",
-      "coat": {
-        "ƒ.CoatColored": {
-          "color": "[1, 1, 1, 1]"
-        }
-      }
-    }
-  },
-  "MeshPolygon|2021-10-13T12:13:09.169Z|52323": {
-    "ƒ.MeshPolygon": {
-      "idResource": "MeshPolygon|2021-10-13T12:13:09.169Z|52323",
-      "name": "LaserCenter",
-      "type": "MeshPolygon",
-      "shape": {
-        "ƒ.Vector2": [
-          "[-1, -1]",
-          "[1, -1]",
-          "[0, 1]"
-        ]
-      },
-      "fitTexture": true
-    }
-  },
-  "MeshPyramid|2021-10-13T12:53:44.103Z|73455": {
-    "ƒ.MeshPyramid": {
-      "idResource": "MeshPyramid|2021-10-13T12:53:44.103Z|73455",
-      "name": "MeshPyramid",
-      "type": "MeshPyramid"
     }
   }
 }
