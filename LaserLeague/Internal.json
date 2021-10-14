@@ -93,7 +93,7 @@
             "children": [
               {
                 "ƒ.Node": {
-                  "name": "Laser1",
+                  "name": "Laser",
                   "components": {
                     "ComponentTransform": [
                       {
@@ -289,7 +289,7 @@
             "children": [
               {
                 "ƒ.Node": {
-                  "name": "Agent1",
+                  "name": "Agent",
                   "components": {
                     "ComponentMesh": [
                       {
