@@ -45,11 +45,11 @@ var Script;
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
         let graph = viewport.getBranch();
         let laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
-        transform = laser.getComponent(FudgeCore.ComponentTransform).mtxLocal;
+        transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
-        transform.rotateZ(1);
+        transform.rotateZ(5);
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
