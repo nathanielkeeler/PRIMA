@@ -49,7 +49,7 @@ var Script;
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
-        transform.rotateZ(5);
+        transform.rotateZ(0.5);
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
