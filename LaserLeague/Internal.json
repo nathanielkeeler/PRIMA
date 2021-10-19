@@ -18,25 +18,33 @@
       }
     }
   },
-  "MeshPyramid|2021-10-13T12:53:44.103Z|73455": {
-    "ƒ.MeshPyramid": {
-      "idResource": "MeshPyramid|2021-10-13T12:53:44.103Z|73455",
-      "name": "MeshPyramid",
-      "type": "MeshPyramid"
-    }
-  },
   "MeshTorus|2021-10-19T11:22:35.567Z|46865": {
     "ƒ.MeshTorus": {
       "idResource": "MeshTorus|2021-10-19T11:22:35.567Z|46865",
-      "name": "MeshTorus",
+      "name": "LaserCenter",
       "type": "MeshTorus"
     }
   },
   "MeshCube|2021-10-19T11:55:03.532Z|69211": {
     "ƒ.MeshCube": {
       "idResource": "MeshCube|2021-10-19T11:55:03.532Z|69211",
-      "name": "MeshCube",
+      "name": "Boundaries",
       "type": "MeshCube"
+    }
+  },
+  "MeshPolygon|2021-10-19T13:17:03.979Z|64420": {
+    "ƒ.MeshPolygon": {
+      "idResource": "MeshPolygon|2021-10-19T13:17:03.979Z|64420",
+      "name": "Agent",
+      "type": "MeshPolygon",
+      "shape": {
+        "ƒ.Vector2": [
+          "[-1, -1]",
+          "[1, -1]",
+          "[0, 1]"
+        ]
+      },
+      "fitTexture": true
     }
   },
   "Graph|2021-10-13T11:16:55.130Z|04635": {
@@ -758,11 +766,11 @@
                     "ComponentMesh": [
                       {
                         "ƒ.ComponentMesh": {
-                          "idMesh": "MeshPyramid|2021-10-13T12:53:44.103Z|73455",
+                          "idMesh": "MeshPolygon|2021-10-19T13:17:03.979Z|64420",
                           "pivot": {
                             "translation": "[0, 0, 0]",
-                            "rotation": "[90, 0, 0]",
-                            "scaling": "[0.5, 0.30000001192092896, 0.5]"
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[0.19999992847442627, 0.2999999225139618, 1]"
                           },
                           "Component": {
                             "active": true
@@ -785,6 +793,20 @@
                             "active": true
                           },
                           "idMaterial": "Material|2021-10-13T11:52:44.848Z|58679"
+                        }
+                      }
+                    ],
+                    "ComponentTransform": [
+                      {
+                        "ƒ.ComponentTransform": {
+                          "local": {
+                            "translation": "[0, 0, 0]",
+                            "rotation": "[0, 0, 0]",
+                            "scaling": "[1, 1, 1]"
+                          },
+                          "Component": {
+                            "active": true
+                          }
                         }
                       }
                     ]
