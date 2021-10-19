@@ -14,8 +14,8 @@ namespace Script {
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
 
     let graph: ƒ.Node = viewport.getBranch();
-    let laser1: ƒ.Node = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
-    transform = laser1.getComponent(ƒ.ComponentTransform).mtxLocal;
+    let laser: ƒ.Node = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
+    transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
   }
 
   function update(_event: Event): void {
