@@ -39,8 +39,9 @@ var Script;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     //----- Variables -----
-    let transform;
     let agent;
+    let laser;
+    let transform;
     let ctrVertical = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
     ctrVertical.setDelay(100);
     let ctrRotation = new ƒ.Control("Rotation", 1, 0 /* PROPORTIONAL */);
@@ -48,9 +49,9 @@ var Script;
     function start(_event) {
         viewport = _event.detail;
         let graph = viewport.getBranch();
-        let laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
-        transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent")[0];
+        laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
+        transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
         //Camera
         viewport.camera.mtxPivot.translateZ(-15);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -59,10 +60,10 @@ var Script;
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
         let deltaTime = ƒ.Loop.timeFrameReal / 1000;
-        let speedLaserRotate = 60; // degrees per second
+        let speedLaserRotation = 60; // degrees per second
         let speedAgentTranslation = 5; // meters per second
-        let speedAgentRotation = 350; // meters per second
-        // Controlls
+        let speedAgentRotation = 400; // meters per second
+        //----- Controlls -----
         let ctrVerticalValue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
             + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]));
         ctrVertical.setInput(ctrVerticalValue * deltaTime * speedAgentTranslation);
@@ -72,9 +73,18 @@ var Script;
         ctrRotation.setInput(ctrRotationValue * deltaTime * speedAgentRotation);
         agent.mtxLocal.rotateZ(ctrRotation.getOutput());
         //------------------
-        transform.rotateZ(speedLaserRotate * deltaTime);
+        //transform.rotateZ(speedLaserRotation * deltaTime);
         viewport.draw();
+        checkCollision();
         ƒ.AudioManager.default.update();
+    }
+    function checkCollision() {
+        // Loop through all laser nodes and their beams
+        // Check if posLocal x value are >1 or <-1
+        // Alert User
+        let beam = laser.getChildren()[0];
+        let posLocal = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
+        console.log(posLocal.toString());
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

@@ -6,9 +6,9 @@ namespace Script {
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
   //----- Variables -----
-  let transform: ƒ.Matrix4x4;
   let agent: ƒ.Node;
-
+  let laser: ƒ.Node;
+  let transform: ƒ.Matrix4x4;
   let ctrVertical: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrVertical.setDelay(100);
   let ctrRotation: ƒ.Control = new ƒ.Control("Rotation", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
@@ -18,9 +18,9 @@ namespace Script {
     viewport = _event.detail;
 
     let graph: ƒ.Node = viewport.getBranch();
-    let laser: ƒ.Node = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
-    transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
     agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent")[0];
+    laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
+    transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
 
     //Camera
     viewport.camera.mtxPivot.translateZ(-15);
@@ -33,11 +33,11 @@ namespace Script {
     // ƒ.Physics.world.simulate();  // if physics is included and used
 
     let deltaTime: number =ƒ.Loop.timeFrameReal / 1000;
-    let speedLaserRotate: number = 60; // degrees per second
+    let speedLaserRotation: number = 60; // degrees per second
     let speedAgentTranslation: number = 5; // meters per second
-    let speedAgentRotation: number = 350; // meters per second
+    let speedAgentRotation: number = 400; // meters per second
     
-    // Controlls
+    //----- Controlls -----
     let ctrVerticalValue: number = (
       ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
       + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])
@@ -53,9 +53,22 @@ namespace Script {
     agent.mtxLocal.rotateZ(ctrRotation.getOutput());
     //------------------
 
-    transform.rotateZ(speedLaserRotate * deltaTime);
+    //transform.rotateZ(speedLaserRotation * deltaTime);
 
     viewport.draw();
+
+    checkCollision();
+
+
     ƒ.AudioManager.default.update();
+  }
+
+  function checkCollision(): void {
+    // Loop through all laser nodes and their beams
+    // Check if posLocal x value are >1 or <-1
+    // Alert User
+    let beam: ƒ.Node = laser.getChildren()[0];
+    let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
+    console.log(posLocal.toString());
   }
 }
