@@ -38,8 +38,13 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
+    //----- Variables -----
     let transform;
     let agent;
+    let ctrVertical = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
+    ctrVertical.setDelay(100);
+    let ctrRotation = new ƒ.Control("Rotation", 1, 0 /* PROPORTIONAL */);
+    ctrRotation.setDelay(80);
     function start(_event) {
         viewport = _event.detail;
         let graph = viewport.getBranch();
@@ -53,22 +58,20 @@ var Script;
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
-        let speedLaserRotate = 60; // degrees per second
         let deltaTime = ƒ.Loop.timeFrameReal / 1000;
+        let speedLaserRotate = 60; // degrees per second
         let speedAgentTranslation = 5; // meters per second
-        let speedAgentRotation = 400; // meters per second
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
-            agent.mtxLocal.translateY(speedAgentTranslation * deltaTime);
-        }
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S])) {
-            agent.mtxLocal.translateY(-speedAgentTranslation * deltaTime);
-        }
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
-            agent.mtxLocal.rotateZ(speedAgentRotation * deltaTime);
-        }
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
-            agent.mtxLocal.rotateZ(-speedAgentRotation * deltaTime);
-        }
+        let speedAgentRotation = 350; // meters per second
+        // Controlls
+        let ctrVerticalValue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
+            + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]));
+        ctrVertical.setInput(ctrVerticalValue * deltaTime * speedAgentTranslation);
+        agent.mtxLocal.translateY(ctrVertical.getOutput());
+        let ctrRotationValue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])
+            + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]));
+        ctrRotation.setInput(ctrRotationValue * deltaTime * speedAgentRotation);
+        agent.mtxLocal.rotateZ(ctrRotation.getOutput());
+        //------------------
         transform.rotateZ(speedLaserRotate * deltaTime);
         viewport.draw();
         ƒ.AudioManager.default.update();
