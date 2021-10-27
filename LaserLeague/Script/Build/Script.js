@@ -37,12 +37,13 @@ var Script;
     var ƒ = FudgeCore;
     ƒ.Debug.info("Welcome to LaserLeague!");
     //----- Variables -----
-    let fps = 60;
+    let fps = 144;
     let viewport;
     let transform;
     let agent;
     let laser;
     let laserCopy;
+    let root;
     let ctrVertical = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
     ctrVertical.setDelay(100);
     let ctrRotation = new ƒ.Control("Rotation", 1, 0 /* PROPORTIONAL */);
@@ -51,7 +52,7 @@ var Script;
     async function start(_event) {
         viewport = _event.detail;
         // Load Graph and its Nodes for access
-        let root = viewport.getBranch();
+        root = viewport.getBranch();
         agent = root.getChildrenByName("Agents")[0].getChildrenByName("Agent")[0]; // picks out the first single agent node
         laser = root.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0]; // picks out the first single laser node
         transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
@@ -62,7 +63,7 @@ var Script;
         laserCopy = await ƒ.Project.createGraphInstance(graphLaser);
         root.getChildrenByName("Lasers")[0].addChild(laserCopy);
         // laserCopy.addComponent(new ƒ.ComponentTransform);
-        laserCopy.mtxLocal.translateX(5);
+        laserCopy.mtxLocal.translateX(8);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
@@ -82,17 +83,26 @@ var Script;
         ctrRotation.setInput(ctrRotationValue * deltaTime * speedAgentRotation);
         agent.mtxLocal.rotateZ(ctrRotation.getOutput());
         //------------------
-        transform.rotateZ(speedLaserRotation * deltaTime);
+        //transform.rotateZ(speedLaserRotation * deltaTime);
+        // collision check for agents and laserbeams
+        for (let components of laser) {
+            let beams = components.getChildrenByName("Laserbeams");
+            for (let beam of beams) {
+                checkCollision(agent, beam);
+            }
+        }
         viewport.draw();
-        checkCollision();
         ƒ.AudioManager.default.update();
     }
-    function checkCollision() {
-        // Loop through all laser nodes and their beams
-        // Check if posLocal x value are >1 or <-1
-        // Alert User
-        // let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beams.mtxWorldInverse, true);
-        // console.log(posLocal.toString());
+    function checkCollision(_agent, _beam) {
+        let posLocal = ƒ.Vector3.TRANSFORMATION(_agent.mtxWorld.translation, _beam.mtxWorldInverse);
+        let difference = ƒ.Vector2.DIFFERENCE(posLocal.toVector2(), _beam.mtxLocal.translation.toVector2());
+        if (difference.x < -1 || difference.x > 1 || difference.y < -0.5 || difference.y > 2) {
+            return;
+        }
+        else {
+            console.log("Collision with Laserbeam!");
+        }
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
