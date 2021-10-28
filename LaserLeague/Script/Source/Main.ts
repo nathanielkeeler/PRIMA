@@ -28,16 +28,16 @@ namespace Script {
     agent = root.getChildrenByName("Agents")[0].getChildrenByName("Agent")[0]; // picks out the first single agent node
     agentoriginalpos = agent.getComponent(ƒ.ComponentTransform); // gets starting position of agent
     laser = root.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0]; // picks out the first single laser node
-
-    // Camera
-    viewport.camera.mtxPivot.translateZ(-15);
-
+    
     // Add another laser as graph
     let graphLaser: ƒ.Graph = await ƒ.Project.registerAsGraph(laser, false);
     laserCopy = await ƒ.Project.createGraphInstance(graphLaser);
     root.getChildrenByName("Lasers")[0].addChild(laserCopy);
     // laserCopy.addComponent(new ƒ.ComponentTransform);
     laserCopy.mtxLocal.translateX(8);
+    
+    // Camera
+    viewport.camera.mtxPivot.translateZ(-15);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -67,15 +67,12 @@ namespace Script {
     //------------------
 
     // collision check for agents and laserbeams
-    for (let components of laser) {
-      let beams: ƒ.Node[] = components.getChildrenByName("Laserbeams");
-      beams.forEach(beam => {
-        checkCollision(agent, beam);
-      });
-    }
-
+    let beams: ƒ.Node[] = laser.getChildrenByName("Laserbeam");
+    beams.forEach(beam => {
+      checkCollision(agent,beam);
+    });
+  
     viewport.draw();
-
 
     ƒ.AudioManager.default.update();
   }
