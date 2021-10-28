@@ -295,6 +295,16 @@
                           }
                         }
                       }
+                    ],
+                    "LaserRotator": [
+                      {
+                        "Script.LaserRotator": {
+                          "active": true,
+                          "message": "LaserRotator added to Node",
+                          "speedLaserRotation": 90,
+                          "deltaTime": 0
+                        }
+                      }
                     ]
                   },
                   "children": [
