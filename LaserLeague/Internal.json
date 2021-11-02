@@ -298,7 +298,7 @@
                     ],
                     "LaserRotator": [
                       {
-                        "Script.LaserRotator": {
+                        "LaserLeague.LaserRotator": {
                           "active": true,
                           "message": "LaserRotator added to Node",
                           "speedLaserRotation": 90,

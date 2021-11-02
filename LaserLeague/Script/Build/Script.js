@@ -1,8 +1,8 @@
 "use strict";
-var Script;
-(function (Script) {
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    ƒ.Project.registerScriptNamespace(LaserLeague); // Register the namespace to FUDGE for serialization
     class CustomComponentScript extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
@@ -30,10 +30,10 @@ var Script;
             }
         };
     }
-    Script.CustomComponentScript = CustomComponentScript;
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
+    LaserLeague.CustomComponentScript = CustomComponentScript;
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Welcome to LaserLeague!");
     //----- Variables -----
@@ -60,7 +60,6 @@ var Script;
         let graphLaser = await ƒ.Project.registerAsGraph(laser, false);
         laserCopy = await ƒ.Project.createGraphInstance(graphLaser);
         root.getChildrenByName("Lasers")[0].addChild(laserCopy);
-        // laserCopy.addComponent(new ƒ.ComponentTransform);
         laserCopy.mtxLocal.translateX(8);
         // Camera
         viewport.camera.mtxPivot.translateZ(-15);
@@ -70,7 +69,7 @@ var Script;
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
         let deltaTime = ƒ.Loop.timeFrameReal / 1000;
-        let speedAgentTranslation = 5; // meters per second
+        let speedAgentTranslation = 4; // meters per second
         let speedAgentRotation = 400; // meters per second
         //----- Controlls -----
         let ctrVerticalValue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
@@ -99,11 +98,11 @@ var Script;
             agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
         }
     }
-})(Script || (Script = {}));
-var Script;
-(function (Script) {
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    ƒ.Project.registerScriptNamespace(LaserLeague); // Register the namespace to FUDGE for serialization
     class LaserRotator extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(LaserRotator);
@@ -140,6 +139,6 @@ var Script;
             this.node.mtxLocal.rotateZ(this.speedLaserRotation * deltaTime);
         };
     }
-    Script.LaserRotator = LaserRotator;
-})(Script || (Script = {}));
+    LaserLeague.LaserRotator = LaserRotator;
+})(LaserLeague || (LaserLeague = {}));
 //# sourceMappingURL=Script.js.map

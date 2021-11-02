@@ -1,4 +1,4 @@
-namespace Script {
+namespace LaserLeague {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Welcome to LaserLeague!");
 
@@ -33,7 +33,6 @@ namespace Script {
     let graphLaser: ƒ.Graph = await ƒ.Project.registerAsGraph(laser, false);
     laserCopy = await ƒ.Project.createGraphInstance(graphLaser);
     root.getChildrenByName("Lasers")[0].addChild(laserCopy);
-    // laserCopy.addComponent(new ƒ.ComponentTransform);
     laserCopy.mtxLocal.translateX(8);
     
     // Camera
@@ -47,7 +46,7 @@ namespace Script {
     // ƒ.Physics.world.simulate();  // if physics is included and used
 
     let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
-    let speedAgentTranslation: number = 5; // meters per second
+    let speedAgentTranslation: number = 4; // meters per second
     let speedAgentRotation: number = 400; // meters per second
 
     //----- Controlls -----
