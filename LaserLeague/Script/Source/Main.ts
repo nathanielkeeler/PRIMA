@@ -2,42 +2,46 @@ namespace LaserLeague {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Welcome to LaserLeague!");
 
+  let viewport: ƒ.Viewport;
+  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
+
   //----- Variables -----
   let fps: number = 144;
-  let viewport: ƒ.Viewport;
   let root: ƒ.Node;
 
   let agent: ƒ.Node;
-  let agentoriginalpos: ƒ.Mutator;
 
   let laser: ƒ.Node;
-  let laserCopy: ƒ.GraphInstance;
 
-  let ctrVertical: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
-  ctrVertical.setDelay(100);
+  let ctrForward: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  ctrForward.setDelay(100);
   let ctrRotation: ƒ.Control = new ƒ.Control("Rotation", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrRotation.setDelay(80);
 
-  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
-
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
-
-    // Load Graph and its Nodes for access
+    
     root = viewport.getBranch();
-    agent = root.getChildrenByName("Agents")[0].getChildrenByName("Agent")[0]; // picks out the first single agent node
-    agentoriginalpos = agent.getComponent(ƒ.ComponentTransform); // gets starting position of agent
+    
+    agent = new Agent();
+    root.getChildrenByName("Agents")[0].addChild(agent);
+    
+    for (let i: number = 0; i < 3; i++) {
+      for (let j: number = 0; j < 2; j++) {
+        let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-04T13:43:21.788Z|72482"];
+        let laserCopy = await ƒ.Project.createGraphInstance(graphLaser);
+        root.getChildrenByName("Lasers")[0].addChild(laserCopy);
+        laserCopy.mtxLocal.translateX(-5 + i * 5);
+        laserCopy.mtxLocal.translateY(-2.5 + j * 5);
+        if (j >= 1)
+          laserCopy.getComponent(LaserRotator).speedLaserRotation *= -1;
+      }
+    }
+
     laser = root.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0]; // picks out the first single laser node
     
-    // Add another laser as graph
-    let graphLaser: ƒ.Graph = await ƒ.Project.registerAsGraph(laser, false);
-    laserCopy = await ƒ.Project.createGraphInstance(graphLaser);
-    root.getChildrenByName("Lasers")[0].addChild(laserCopy);
-    laserCopy.mtxLocal.translateX(8);
-    
-    // Camera
     viewport.camera.mtxPivot.translateZ(-15);
-
+    
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
@@ -47,15 +51,15 @@ namespace LaserLeague {
 
     let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
     let speedAgentTranslation: number = 4; // meters per second
-    let speedAgentRotation: number = 400; // meters per second
+    let speedAgentRotation: number = 360; // meters per second
 
     //----- Controlls -----
-    let ctrVerticalValue: number = (
+    let ctrForwardValue: number = (
       ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
       + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])
     );
-    ctrVertical.setInput(ctrVerticalValue * deltaTime * speedAgentTranslation);
-    agent.mtxLocal.translateY(ctrVertical.getOutput());
+    ctrForward.setInput(ctrForwardValue * deltaTime * speedAgentTranslation);
+    agent.mtxLocal.translateY(ctrForward.getOutput());
 
     let ctrRotationValue: number = (
       ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])
@@ -82,7 +86,6 @@ namespace LaserLeague {
     let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
     if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
       console.log("Collision detected!");
-      agent.getComponent(ƒ.ComponentTransform).mutate(agentoriginalpos);
     }
   }
 }
