@@ -1,5 +1,6 @@
 namespace LaserLeague {
   import ƒ = FudgeCore;
+
   ƒ.Debug.info("Welcome to LaserLeague!");
 
   let viewport: ƒ.Viewport;
@@ -9,7 +10,7 @@ namespace LaserLeague {
   let fps: number = 144;
   let root: ƒ.Node;
 
-  let agent: ƒ.Node;
+  let agent: any;
 
   let laser: ƒ.Node;
 
@@ -20,12 +21,12 @@ namespace LaserLeague {
 
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
-    
+
     root = viewport.getBranch();
-    
+
     agent = new Agent();
     root.getChildrenByName("Agents")[0].addChild(agent);
-    
+
     for (let i: number = 0; i < 3; i++) {
       for (let j: number = 0; j < 2; j++) {
         let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-04T13:43:21.788Z|72482"];
@@ -33,15 +34,15 @@ namespace LaserLeague {
         root.getChildrenByName("Lasers")[0].addChild(laserCopy);
         laserCopy.mtxLocal.translateX(-5 + i * 5);
         laserCopy.mtxLocal.translateY(-2.5 + j * 5);
-        if (j >= 1)
+        if (i % 2 == 0)
           laserCopy.getComponent(LaserRotator).speedLaserRotation *= -1;
       }
     }
 
     laser = root.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0]; // picks out the first single laser node
-    
+
     viewport.camera.mtxPivot.translateZ(-15);
-    
+
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
@@ -72,15 +73,17 @@ namespace LaserLeague {
     // collision check for agents and laserbeams
     let beams: ƒ.Node[] = laser.getChildrenByName("Laserbeam");
     beams.forEach(beam => {
-      checkCollision(agent,beam);
+      checkCollision(agent, beam);
     });
-  
+
     viewport.draw();
 
     ƒ.AudioManager.default.update();
+
+    GameState.get().health -= 0.01;
   }
 
-  function checkCollision(collider: ƒ.Node, obstacle: ƒ.Node) {
+  function checkCollision(collider: ƒ.Node, obstacle: ƒ.Node): void {
     let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);
     let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
     let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;

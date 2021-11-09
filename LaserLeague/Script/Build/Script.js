@@ -3,6 +3,8 @@ var LaserLeague;
 (function (LaserLeague) {
     var ƒ = FudgeCore;
     class Agent extends ƒ.Node {
+        name = "Agent Smith";
+        health = 1;
         constructor() {
             super("Agent");
             this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshPolygon("MeshAgent")));
@@ -50,6 +52,29 @@ var LaserLeague;
 var LaserLeague;
 (function (LaserLeague) {
     var ƒ = FudgeCore;
+    var ƒui = FudgeUserInterface;
+    class GameState extends ƒ.Mutable {
+        static controller;
+        static instance;
+        name = "LaserLeague";
+        health = 1;
+        constructor() {
+            super();
+            let domHud = document.querySelector("#HUD");
+            GameState.instance = this;
+            GameState.controller = new ƒui.Controller(this, domHud);
+            console.log("Hud-Controller", GameState.controller);
+        }
+        static get() {
+            return GameState.instance || new GameState();
+        }
+        reduceMutator(_mutator) { }
+    }
+    LaserLeague.GameState = GameState;
+})(LaserLeague || (LaserLeague = {}));
+var LaserLeague;
+(function (LaserLeague) {
+    var ƒ = FudgeCore;
     ƒ.Debug.info("Welcome to LaserLeague!");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
@@ -74,7 +99,7 @@ var LaserLeague;
                 root.getChildrenByName("Lasers")[0].addChild(laserCopy);
                 laserCopy.mtxLocal.translateX(-5 + i * 5);
                 laserCopy.mtxLocal.translateY(-2.5 + j * 5);
-                if (j >= 1)
+                if (i % 2 == 0)
                     laserCopy.getComponent(LaserLeague.LaserRotator).speedLaserRotation *= -1;
             }
         }
@@ -105,6 +130,7 @@ var LaserLeague;
         });
         viewport.draw();
         ƒ.AudioManager.default.update();
+        LaserLeague.GameState.get().health -= 0.01;
     }
     function checkCollision(collider, obstacle) {
         let distance = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);

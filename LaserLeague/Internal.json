@@ -50,7 +50,26 @@
   "Graph|2021-10-13T11:16:55.130Z|04635": {
     "ƒ.Graph": {
       "name": "Scene",
-      "components": {},
+      "components": {
+        "ComponentAudio": [
+          {
+            "ƒ.ComponentAudio": {
+              "active": true,
+              "idResource": "Audio|2021-11-09T14:26:44.347Z|14643",
+              "playing": true,
+              "loop": true,
+              "volume": 1
+            }
+          }
+        ],
+        "ComponentAudioListener": [
+          {
+            "ƒ.ComponentAudioListener": {
+              "active": true
+            }
+          }
+        ]
+      },
       "children": [
         {
           "ƒ.Node": {
@@ -544,6 +563,14 @@
       ],
       "idResource": "Graph|2021-11-04T13:43:21.788Z|72482",
       "type": "Graph"
+    }
+  },
+  "Audio|2021-11-09T14:26:44.347Z|14643": {
+    "ƒ.Audio": {
+      "url": "Sound\\trancyvania.mp3",
+      "idResource": "Audio|2021-11-09T14:26:44.347Z|14643",
+      "name": "sndAtmo",
+      "type": "Audio"
     }
   }
 }

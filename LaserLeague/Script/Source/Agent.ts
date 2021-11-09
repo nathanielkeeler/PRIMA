@@ -2,6 +2,10 @@ namespace LaserLeague {
     import ƒ = FudgeCore;
 
     export class Agent extends ƒ.Node {
+
+        public name: string = "Agent Smith";
+        public health: number = 1;
+
         constructor() {
             super("Agent");
 
