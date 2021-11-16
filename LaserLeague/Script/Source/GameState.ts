@@ -10,7 +10,7 @@ namespace LaserLeague {
 
         private constructor() {
             super();
-            let domHud: HTMLDivElement = document.querySelector("#HUD");
+            let domHud: HTMLDivElement = document.querySelector("#Hud");
             GameState.instance = this;
             GameState.controller = new ƒui.Controller(this, domHud);
             console.log("Hud-Controller", GameState.controller);

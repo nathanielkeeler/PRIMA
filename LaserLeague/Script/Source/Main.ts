@@ -1,5 +1,6 @@
 namespace LaserLeague {
-  import ƒ = FudgeCore;
+  export import ƒ = FudgeCore;
+  export import ƒui = FudgeUserInterface;
 
   ƒ.Debug.info("Welcome to LaserLeague!");
 
@@ -8,12 +9,9 @@ namespace LaserLeague {
 
   //----- Variables -----
   let fps: number = 144;
-  let root: ƒ.Node;
-
+  let graph: ƒ.Node;
   let agent: any;
-
-  let laser: ƒ.Node;
-
+  let lasers: ƒ.Node;
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(100);
   let ctrRotation: ƒ.Control = new ƒ.Control("Rotation", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
@@ -22,26 +20,29 @@ namespace LaserLeague {
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
 
-    root = viewport.getBranch();
+    graph = viewport.getBranch();
 
+    lasers = graph.getChildrenByName("Lasers")[0];
     agent = new Agent();
-    root.getChildrenByName("Agents")[0].addChild(agent);
+    graph.getChildrenByName("Agents")[0].addChild(agent);
+
+    viewport.getCanvas().addEventListener("mousedown", hndClick);
+    graph.addEventListener("agentEvent", hndAgentEvent);
+    viewport.camera.mtxPivot.translateZ(-15);
+
+    let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-04T13:43:21.788Z|72482"];
 
     for (let i: number = 0; i < 3; i++) {
       for (let j: number = 0; j < 2; j++) {
-        let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-04T13:43:21.788Z|72482"];
-        let laserCopy = await ƒ.Project.createGraphInstance(graphLaser);
-        root.getChildrenByName("Lasers")[0].addChild(laserCopy);
-        laserCopy.mtxLocal.translateX(-5 + i * 5);
-        laserCopy.mtxLocal.translateY(-2.5 + j * 5);
+        let laser = await ƒ.Project.createGraphInstance(graphLaser);
+        laser.addEventListener("graphEvent", hndGraphEvent, true);
+        lasers.addChild(laser);
+        laser.mtxLocal.translateX(-5 + i * 5);
+        laser.mtxLocal.translateY(-2.5 + j * 5);
         if (i % 2 == 0)
-          laserCopy.getComponent(LaserRotator).speedLaserRotation *= -1;
+          laser.getComponent(LaserRotator).speedLaserRotation *= -1;
       }
     }
-
-    laser = root.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0]; // picks out the first single laser node
-
-    viewport.camera.mtxPivot.translateZ(-15);
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps);  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -70,25 +71,30 @@ namespace LaserLeague {
     agent.mtxLocal.rotateZ(ctrRotation.getOutput());
     //------------------
 
-    // collision check for agents and laserbeams
-    let beams: ƒ.Node[] = laser.getChildrenByName("Laserbeam");
-    beams.forEach(beam => {
-      checkCollision(agent, beam);
-    });
-
     viewport.draw();
+
+    agent.getComponent(ƒ.ComponentMaterial).clrPrimary.a = 1;
+    for (let laser of lasers.getChildren()) {
+      if (laser.getComponent(LaserRotator).checkCollision(agent.mtxWorld.translation, 0.25)) {
+        agent.getComponent(ƒ.ComponentMaterial).clrPrimary.a = 0.5;
+        break;
+      }
+    }
 
     ƒ.AudioManager.default.update();
 
     GameState.get().health -= 0.01;
   }
 
-  function checkCollision(collider: ƒ.Node, obstacle: ƒ.Node): void {
-    let distance: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);
-    let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
-    let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
-    if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-      console.log("Collision detected!");
-    }
+  function hndClick(_event: MouseEvent): void {
+    console.log("mousedown event");
+    agent.dispatchEvent(new CustomEvent("agentEvent", { bubbles: true }));
+  }
+  function hndAgentEvent(_event: Event): void {
+    console.log("Agent event received by", _event.currentTarget);
+    (<ƒ.Node>_event.currentTarget).broadcastEvent(new CustomEvent("graphEvent"));
+  }
+  function hndGraphEvent(_event: Event): void {
+    console.log("Graph event received", _event.currentTarget);
   }
 }

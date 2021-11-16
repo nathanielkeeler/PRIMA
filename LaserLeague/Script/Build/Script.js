@@ -60,7 +60,7 @@ var LaserLeague;
         health = 1;
         constructor() {
             super();
-            let domHud = document.querySelector("#HUD");
+            let domHud = document.querySelector("#Hud");
             GameState.instance = this;
             GameState.controller = new ƒui.Controller(this, domHud);
             console.log("Hud-Controller", GameState.controller);
@@ -74,71 +74,80 @@ var LaserLeague;
 })(LaserLeague || (LaserLeague = {}));
 var LaserLeague;
 (function (LaserLeague) {
-    var ƒ = FudgeCore;
-    ƒ.Debug.info("Welcome to LaserLeague!");
+    LaserLeague.ƒ = FudgeCore;
+    LaserLeague.ƒui = FudgeUserInterface;
+    LaserLeague.ƒ.Debug.info("Welcome to LaserLeague!");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     //----- Variables -----
     let fps = 144;
-    let root;
+    let graph;
     let agent;
-    let laser;
-    let ctrForward = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
+    let lasers;
+    let ctrForward = new LaserLeague.ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(100);
-    let ctrRotation = new ƒ.Control("Rotation", 1, 0 /* PROPORTIONAL */);
+    let ctrRotation = new LaserLeague.ƒ.Control("Rotation", 1, 0 /* PROPORTIONAL */);
     ctrRotation.setDelay(80);
     async function start(_event) {
         viewport = _event.detail;
-        root = viewport.getBranch();
+        graph = viewport.getBranch();
+        lasers = graph.getChildrenByName("Lasers")[0];
         agent = new LaserLeague.Agent();
-        root.getChildrenByName("Agents")[0].addChild(agent);
+        graph.getChildrenByName("Agents")[0].addChild(agent);
+        viewport.getCanvas().addEventListener("mousedown", hndClick);
+        graph.addEventListener("agentEvent", hndAgentEvent);
+        viewport.camera.mtxPivot.translateZ(-15);
+        let graphLaser = FudgeCore.Project.resources["Graph|2021-11-04T13:43:21.788Z|72482"];
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 2; j++) {
-                let graphLaser = FudgeCore.Project.resources["Graph|2021-11-04T13:43:21.788Z|72482"];
-                let laserCopy = await ƒ.Project.createGraphInstance(graphLaser);
-                root.getChildrenByName("Lasers")[0].addChild(laserCopy);
-                laserCopy.mtxLocal.translateX(-5 + i * 5);
-                laserCopy.mtxLocal.translateY(-2.5 + j * 5);
+                let laser = await LaserLeague.ƒ.Project.createGraphInstance(graphLaser);
+                laser.addEventListener("graphEvent", hndGraphEvent, true);
+                lasers.addChild(laser);
+                laser.mtxLocal.translateX(-5 + i * 5);
+                laser.mtxLocal.translateY(-2.5 + j * 5);
                 if (i % 2 == 0)
-                    laserCopy.getComponent(LaserLeague.LaserRotator).speedLaserRotation *= -1;
+                    laser.getComponent(LaserLeague.LaserRotator).speedLaserRotation *= -1;
             }
         }
-        laser = root.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0]; // picks out the first single laser node
-        viewport.camera.mtxPivot.translateZ(-15);
-        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, fps); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        LaserLeague.ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        LaserLeague.ƒ.Loop.start(LaserLeague.ƒ.LOOP_MODE.TIME_REAL, fps); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
-        let deltaTime = ƒ.Loop.timeFrameReal / 1000;
+        let deltaTime = LaserLeague.ƒ.Loop.timeFrameReal / 1000;
         let speedAgentTranslation = 4; // meters per second
         let speedAgentRotation = 360; // meters per second
         //----- Controlls -----
-        let ctrForwardValue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN])
-            + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]));
+        let ctrForwardValue = (LaserLeague.ƒ.Keyboard.mapToValue(-1, 0, [LaserLeague.ƒ.KEYBOARD_CODE.S, LaserLeague.ƒ.KEYBOARD_CODE.ARROW_DOWN])
+            + LaserLeague.ƒ.Keyboard.mapToValue(1, 0, [LaserLeague.ƒ.KEYBOARD_CODE.W, LaserLeague.ƒ.KEYBOARD_CODE.ARROW_UP]));
         ctrForward.setInput(ctrForwardValue * deltaTime * speedAgentTranslation);
         agent.mtxLocal.translateY(ctrForward.getOutput());
-        let ctrRotationValue = (ƒ.Keyboard.mapToValue(-1, 0, [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])
-            + ƒ.Keyboard.mapToValue(1, 0, [ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]));
+        let ctrRotationValue = (LaserLeague.ƒ.Keyboard.mapToValue(-1, 0, [LaserLeague.ƒ.KEYBOARD_CODE.D, LaserLeague.ƒ.KEYBOARD_CODE.ARROW_RIGHT])
+            + LaserLeague.ƒ.Keyboard.mapToValue(1, 0, [LaserLeague.ƒ.KEYBOARD_CODE.A, LaserLeague.ƒ.KEYBOARD_CODE.ARROW_LEFT]));
         ctrRotation.setInput(ctrRotationValue * deltaTime * speedAgentRotation);
         agent.mtxLocal.rotateZ(ctrRotation.getOutput());
         //------------------
-        // collision check for agents and laserbeams
-        let beams = laser.getChildrenByName("Laserbeam");
-        beams.forEach(beam => {
-            checkCollision(agent, beam);
-        });
         viewport.draw();
-        ƒ.AudioManager.default.update();
+        agent.getComponent(LaserLeague.ƒ.ComponentMaterial).clrPrimary.a = 1;
+        for (let laser of lasers.getChildren()) {
+            if (laser.getComponent(LaserLeague.LaserRotator).checkCollision(agent.mtxWorld.translation, 0.25)) {
+                agent.getComponent(LaserLeague.ƒ.ComponentMaterial).clrPrimary.a = 0.5;
+                break;
+            }
+        }
+        LaserLeague.ƒ.AudioManager.default.update();
         LaserLeague.GameState.get().health -= 0.01;
     }
-    function checkCollision(collider, obstacle) {
-        let distance = ƒ.Vector3.TRANSFORMATION(collider.mtxWorld.translation, obstacle.mtxWorldInverse, true);
-        let minX = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + collider.radius;
-        let minY = obstacle.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + collider.radius;
-        if (distance.x <= (minX) && distance.x >= -(minX) && distance.y <= minY && distance.y >= 0) {
-            console.log("Collision detected!");
-        }
+    function hndClick(_event) {
+        console.log("mousedown event");
+        agent.dispatchEvent(new CustomEvent("agentEvent", { bubbles: true }));
+    }
+    function hndAgentEvent(_event) {
+        console.log("Agent event received by", _event.currentTarget);
+        _event.currentTarget.broadcastEvent(new CustomEvent("graphEvent"));
+    }
+    function hndGraphEvent(_event) {
+        console.log("Graph event received", _event.currentTarget);
     }
 })(LaserLeague || (LaserLeague = {}));
 var LaserLeague;
@@ -149,8 +158,7 @@ var LaserLeague;
         // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(LaserRotator);
         // Properties may be mutated by users in the editor via the automatically created user interface
-        message = "LaserRotator added to Laser";
-        speedLaserRotation = 90;
+        speedLaserRotation = 90; // rotation per millisecond in degrees
         constructor() {
             super();
             // Don't start when running in editor
@@ -164,8 +172,7 @@ var LaserLeague;
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
-                    ƒ.Debug.log(this.message, this.node);
-                    this.start();
+                    ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
                     break;
                 case "componentRemove" /* COMPONENT_REMOVE */:
                     this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
@@ -173,13 +180,20 @@ var LaserLeague;
                     break;
             }
         };
-        start() {
-            ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
-        }
         update = (_event) => {
-            let deltaTime = ƒ.Loop.timeFrameReal / 1000;
-            this.node.mtxLocal.rotateZ(this.speedLaserRotation * deltaTime);
+            this.node.mtxLocal.rotateZ(this.speedLaserRotation * ƒ.Loop.timeFrameGame / 1000);
         };
+        checkCollision(_pos, _radius) {
+            let beams = this.node.getChildrenByName("Laserbeam");
+            let mtxMeshPivot = beams[0].getComponent(ƒ.ComponentMesh).mtxPivot;
+            for (let beam of beams) {
+                let posLocal = ƒ.Vector3.TRANSFORMATION(_pos, beam.mtxWorldInverse, true);
+                if (posLocal.y < -_radius || posLocal.y > mtxMeshPivot.scaling.y + _radius || posLocal.x < -mtxMeshPivot.scaling.x / 2 - _radius || posLocal.x > mtxMeshPivot.scaling.x / 2 + _radius)
+                    continue;
+                return true;
+            }
+            return false;
+        }
     }
     LaserLeague.LaserRotator = LaserRotator;
 })(LaserLeague || (LaserLeague = {}));

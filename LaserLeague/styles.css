@@ -16,7 +16,7 @@ canvas.fullscreen {
   height: 100vh;
 }
 
-#HUD {
+#Hud {
   position: absolute;
   top: 1rem;
   left: 1rem;
