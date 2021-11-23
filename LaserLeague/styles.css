@@ -1,5 +1,6 @@
 html,
 body {
+  font-family: "Arial Black", sans-serif;
   padding: 0px;
   margin: 0px;
   width: 100%;
@@ -9,11 +10,44 @@ body {
 
 dialog {
   text-align: center;
+  border-radius: 15px;
 }
 
 canvas.fullscreen {
   width: 100vw;
   height: 100vh;
+}
+
+dialog h1 {
+  font-style: italic;
+  font-size: 4.5em;
+  letter-spacing: -1px;
+  background-color: black;
+  color: white;
+  padding: 1rem;
+  transition: 0.2s ease;
+}
+
+dialog h1:hover {
+  background: none;
+  color: blueviolet;
+  transition: 0.2s ease;
+}
+
+dialog p {
+  font-size: 1em;
+  font-style: italic;
+  text-transform: uppercase;
+  background-color: black;
+  color: white;
+  padding: 1rem;
+  transition: 0.2s ease;
+}
+
+dialog p:hover {
+  background: white;
+  color: blueviolet;
+  transition: 0.2s ease;
 }
 
 #Hud {
@@ -23,8 +57,4 @@ canvas.fullscreen {
   color: aquamarine;
   font-family: fantasy;
   font-size: 22px;
-}
-
-.healthbar {
-  background-color: fuchsia;
 }
