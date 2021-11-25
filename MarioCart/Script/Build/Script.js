@@ -49,6 +49,8 @@ var Script;
         viewport = _event.detail;
         viewport.calculateTransforms();
         viewport.camera.mtxPivot.translateZ(-100);
+        viewport.camera.mtxPivot.translateY(120);
+        viewport.camera.mtxPivot.rotateX(50);
         let cmpMeshTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
         meshTerrain = cmpMeshTerrain.mesh;
         mtxTerrain = cmpMeshTerrain.mtxWorld;

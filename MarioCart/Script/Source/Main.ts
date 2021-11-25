@@ -18,10 +18,13 @@ namespace Script {
     viewport = _event.detail;
     viewport.calculateTransforms();
     viewport.camera.mtxPivot.translateZ(-100);
+    viewport.camera.mtxPivot.translateY(120);
+    viewport.camera.mtxPivot.rotateX(50);
 
     let cmpMeshTerrain: ƒ.ComponentMesh = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
     meshTerrain = <ƒ.MeshTerrain>cmpMeshTerrain.mesh;
     mtxTerrain = cmpMeshTerrain.mtxWorld;
+
     cart = viewport.getBranch().getChildrenByName("Cart")[0];
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
