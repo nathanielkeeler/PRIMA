@@ -39,6 +39,7 @@ var Script;
     let graph;
     let viewport;
     let cart;
+    let cmpMeshTerrain;
     let mtxTerrain;
     let meshTerrain;
     let camera = new ƒ.Node("cameraNode");
@@ -51,15 +52,17 @@ var Script;
     function start(_event) {
         graph = ƒ.Project.resources["Graph|2021-11-18T14:33:55.349Z|10541"];
         viewport = _event.detail;
-        let cmpMeshTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
+        cmpMeshTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
         meshTerrain = cmpMeshTerrain.mesh;
         mtxTerrain = cmpMeshTerrain.mtxWorld;
-        cart = viewport.getBranch().getChildrenByName("Cart")[0];
-        cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 8, -12);
+        cart = graph.getChildrenByName("Cart")[0];
+        cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 6, -15);
         cmpCamera.mtxPivot.rotation = new ƒ.Vector3(25, 0, 0);
         camera.addComponent(cmpCamera);
         camera.addComponent(new ƒ.ComponentTransform());
         graph.addChild(camera);
+        let canvas = document.querySelector("canvas");
+        viewport.initialize("Viewport", graph, cmpCamera, canvas);
         viewport.calculateTransforms();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
