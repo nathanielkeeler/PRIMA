@@ -36,30 +36,38 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
+    let graph;
     let viewport;
     let cart;
     let mtxTerrain;
     let meshTerrain;
-    let ctrForward = new ƒ.Control("Forward", 10, 0 /* PROPORTIONAL */);
-    ctrForward.setDelay(200);
+    let camera = new ƒ.Node("cameraNode");
+    let cmpCamera = new ƒ.ComponentCamera();
+    let ctrForward = new ƒ.Control("Forward", 15, 0 /* PROPORTIONAL */);
+    ctrForward.setDelay(700);
     let ctrTurn = new ƒ.Control("Turn", 100, 0 /* PROPORTIONAL */);
-    ctrForward.setDelay(50);
+    ctrTurn.setDelay(200);
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
+        graph = ƒ.Project.resources["Graph|2021-11-18T14:33:55.349Z|10541"];
         viewport = _event.detail;
-        viewport.calculateTransforms();
-        viewport.camera.mtxPivot.translateZ(-100);
-        viewport.camera.mtxPivot.translateY(120);
-        viewport.camera.mtxPivot.rotateX(50);
         let cmpMeshTerrain = viewport.getBranch().getChildrenByName("Terrain")[0].getComponent(ƒ.ComponentMesh);
         meshTerrain = cmpMeshTerrain.mesh;
         mtxTerrain = cmpMeshTerrain.mtxWorld;
         cart = viewport.getBranch().getChildrenByName("Cart")[0];
+        cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 8, -12);
+        cmpCamera.mtxPivot.rotation = new ƒ.Vector3(25, 0, 0);
+        camera.addComponent(cmpCamera);
+        camera.addComponent(new ƒ.ComponentTransform());
+        graph.addChild(camera);
+        viewport.calculateTransforms();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     }
     function update(_event) {
         // ƒ.Physics.world.simulate();  // if physics is included and used
+        camera.mtxLocal.translation = cart.mtxWorld.translation;
+        camera.mtxLocal.rotation = new ƒ.Vector3(0, cart.mtxWorld.rotation.y, 0);
         let speedCartRotation = 1.8;
         let deltaTime = ƒ.Loop.timeFrameReal / 1000;
         let forward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
