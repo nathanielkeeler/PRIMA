@@ -18,9 +18,9 @@ namespace Script {
   let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 100, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrTurn.setDelay(200);
 
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <any>start);
 
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
 
     graph = <ƒ.Graph>ƒ.Project.resources["Graph|2021-11-18T14:33:55.349Z|10541"];
 
@@ -32,17 +32,7 @@ namespace Script {
 
     cart = graph.getChildrenByName("Cart")[0];
 
-    cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 6, -15);
-    cmpCamera.mtxPivot.rotation = new ƒ.Vector3(25, 0, 0);
-
-    camera.addComponent(cmpCamera);
-    camera.addComponent(new ƒ.ComponentTransform());
-    graph.addChild(camera);
-
-    let canvas: HTMLCanvasElement = document.querySelector("canvas");
-    viewport.initialize("Viewport", graph, cmpCamera, canvas);
-
-    viewport.calculateTransforms();
+    cameraTrackCart();
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -71,5 +61,19 @@ namespace Script {
 
     viewport.draw();
     ƒ.AudioManager.default.update();
+  }
+
+  function cameraTrackCart() {
+    cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 10, -18);
+    cmpCamera.mtxPivot.rotation = new ƒ.Vector3(22, 0, 0);
+
+    camera.addComponent(cmpCamera);
+    camera.addComponent(new ƒ.ComponentTransform());
+    graph.addChild(camera);
+
+    let canvas: HTMLCanvasElement = document.querySelector("canvas");
+    viewport.initialize("Viewport", graph, cmpCamera, canvas);
+
+    viewport.calculateTransforms();
   }
 }
