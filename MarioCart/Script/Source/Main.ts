@@ -15,9 +15,9 @@ namespace Script {
   let camera: ƒ.Node = new ƒ.Node("cameraNode");
   let cmpCamera = new ƒ.ComponentCamera();
 
-  let ctrForward: ƒ.Control = new ƒ.Control("Forward", 200, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  let ctrForward: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(200);
-  let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 100, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrTurn.setDelay(200);
 
   document.addEventListener("interactiveViewportStarted", <any>start);
@@ -59,22 +59,17 @@ namespace Script {
     camera.mtxLocal.translation = cart.mtxWorld.translation;
     camera.mtxLocal.rotation = new ƒ.Vector3(0, cart.mtxWorld.rotation.y, 0);
 
-    // let speedCartRotation: number = 1.8;
-    // let deltaTime: number = ƒ.Loop.timeFrameReal / 1000;
-
     let forward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
     ctrForward.setInput(forward);
     cartBody.applyForce(ƒ.Vector3.SCALE(cartBody.node.mtxLocal.getZ(), ctrForward.getOutput()));
-    // cart.mtxLocal.translateZ(ctrForward.getOutput() * deltaTime);
 
     let turn: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
     ctrTurn.setInput(turn);
     cartBody.applyTorque(ƒ.Vector3.SCALE(ƒ.Vector3.Y(), ctrTurn.getOutput()));
-    // cart.mtxLocal.rotateY(ctrTurn.getOutput() * deltaTime * speedCartRotation);
 
-    // let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(cart.mtxLocal.translation, mtxTerrain);
-    // cart.mtxLocal.translation = terrainInfo.position;
-    // cart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, cart.mtxLocal.getZ()), terrainInfo.normal);
+    let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(cart.mtxLocal.translation, mtxTerrain);
+    cart.mtxLocal.translation = terrainInfo.position;
+    cart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, cart.mtxLocal.getZ()), terrainInfo.normal);
 
     viewport.draw();
     ƒ.AudioManager.default.update();
