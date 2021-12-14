@@ -7,6 +7,9 @@ namespace Script {
 
   let cart: ƒ.Node;
   let cartBody: ƒ.ComponentRigidbody;
+  let isGrounded: boolean;
+  let dampTranslation: number;
+  let dampRotation: number;
 
   let cmpMeshTerrain: ƒ.ComponentMesh;
   let mtxTerrain: ƒ.Matrix4x4;
@@ -15,12 +18,13 @@ namespace Script {
   let camera: ƒ.Node = new ƒ.Node("cameraNode");
   let cmpCamera = new ƒ.ComponentCamera();
 
-  let ctrForward: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
-  ctrForward.setDelay(200);
-  let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  let ctrForward: ƒ.Control = new ƒ.Control("Forward", 7000, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  ctrForward.setDelay(500);
+  let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 220, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrTurn.setDelay(200);
 
   document.addEventListener("interactiveViewportStarted", <any>start);
+
 
   async function start(_event: CustomEvent): Promise<void> {
 
@@ -34,7 +38,8 @@ namespace Script {
 
     cart = graph.getChildrenByName("Cart")[0];
     cartBody = cart.getComponent(ƒ.ComponentRigidbody);
-
+    dampTranslation = cartBody.dampTranslation;
+    dampRotation = cartBody.dampRotation;
 
     cameraTrackCart();
 
@@ -42,38 +47,53 @@ namespace Script {
     ƒ.Loop.start();  // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
   }
 
+
   function update(_event: Event): void {
+    let maxHeight: number = 0.3;
+    let minHeight: number = 0.2;
     let forceNodes: ƒ.Node[] = cart.getChildrenByName("Forces")[0].getChildren();
     let force: ƒ.Vector3 = ƒ.Vector3.SCALE(ƒ.Physics.world.getGravity(), -cartBody.mass / forceNodes.length);
 
+    isGrounded = false;
     for (let forceNode of forceNodes) {
       let posForce: ƒ.Vector3 = forceNode.getComponent(ƒ.ComponentMesh).mtxWorld.translation;
       let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(posForce, mtxTerrain);
       let height: number = posForce.y - terrainInfo.position.y;
-      // console.log(height);
-      cartBody.applyForceAtPoint(force, posForce);
+
+      if (height < maxHeight) {
+        cartBody.applyForceAtPoint(ƒ.Vector3.SCALE(force, (maxHeight - height) / (maxHeight - minHeight)), posForce);
+        isGrounded = true;
+      }
+    }
+    
+    if (isGrounded) {
+      cartBody.dampTranslation = dampTranslation;
+      cartBody.dampRotation = dampRotation;
+
+      let forward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+      ctrForward.setInput(forward);
+      cartBody.applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput()));
+      
+      let turn: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
+      ctrTurn.setInput(turn);
+      cartBody.applyTorque(ƒ.Vector3.SCALE(cart.mtxLocal.getY(), ctrTurn.getOutput()));
+    } else {
+      cartBody.dampRotation = cartBody.dampTranslation = 0;
     }
 
-    ƒ.Physics.world.simulate();  // if physics is included and used
-
+    
     camera.mtxLocal.translation = cart.mtxWorld.translation;
     camera.mtxLocal.rotation = new ƒ.Vector3(0, cart.mtxWorld.rotation.y, 0);
-
-    let forward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
-    ctrForward.setInput(forward);
-    cartBody.applyForce(ƒ.Vector3.SCALE(cartBody.node.mtxLocal.getZ(), ctrForward.getOutput()));
-
-    let turn: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
-    ctrTurn.setInput(turn);
-    cartBody.applyTorque(ƒ.Vector3.SCALE(ƒ.Vector3.Y(), ctrTurn.getOutput()));
-
+    
     let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(cart.mtxLocal.translation, mtxTerrain);
     cart.mtxLocal.translation = terrainInfo.position;
     cart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, cart.mtxLocal.getZ()), terrainInfo.normal);
-
+    
+    ƒ.Physics.world.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
+
 
   function cameraTrackCart() {
     cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 10, -18);

@@ -265,9 +265,9 @@
                     "friction": 0.2,
                     "restitution": 0.2,
                     "mass": 200,
-                    "dampTranslation": 0.1,
-                    "dampRotation": 0.1,
-                    "effectGravity": 1,
+                    "dampTranslation": 3,
+                    "dampRotation": 100,
+                    "effectGravity": 1.0000000000000027,
                     "typeBody": "DYNAMIC",
                     "typeCollider": "CUBE",
                     "isTrigger": false,
@@ -292,14 +292,14 @@
                   "children": [
                     {
                       "ƒ.Node": {
-                        "name": "ForceRighttFront",
+                        "name": "ForceRightFront",
                         "components": {
                           "ComponentMesh": [
                             {
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshRotation|2021-12-02T13:53:50.802Z|91732",
                                 "pivot": {
-                                  "translation": "[-0.5, 0.4, 1]",
+                                  "translation": "[-0.5, 0.4000000059604645, 1]",
                                   "rotation": "[0, 0, 90]",
                                   "scaling": "[0.49999991059303284, 0.20000000298023224, 0.49999991059303284]"
                                 },
@@ -333,14 +333,14 @@
                     },
                     {
                       "ƒ.Node": {
-                        "name": "ForceRighttBack",
+                        "name": "ForceRightBack",
                         "components": {
                           "ComponentMesh": [
                             {
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshRotation|2021-12-02T13:53:50.802Z|91732",
                                 "pivot": {
-                                  "translation": "[-0.5, 0.4, -1]",
+                                  "translation": "[-0.5, 0.4000000059604645, -1]",
                                   "rotation": "[0, 0, 90]",
                                   "scaling": "[0.49999991059303284, 0.20000000298023224, 0.49999991059303284]"
                                 },
@@ -381,7 +381,7 @@
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshRotation|2021-12-02T13:53:50.802Z|91732",
                                 "pivot": {
-                                  "translation": "[0.5, 0.4, -1]",
+                                  "translation": "[0.5, 0.4000000059604645, -1]",
                                   "rotation": "[0, 0, 90]",
                                   "scaling": "[0.49999991059303284, 0.20000000298023224, 0.49999991059303284]"
                                 },
@@ -422,7 +422,7 @@
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshRotation|2021-12-02T13:53:50.802Z|91732",
                                 "pivot": {
-                                  "translation": "[0.5, 0.4, 1]",
+                                  "translation": "[0.5, 0.4000000059604645, 1]",
                                   "rotation": "[0, 0, 90]",
                                   "scaling": "[0.49999991059303284, 0.20000000298023224, 0.49999991059303284]"
                                 },
@@ -471,8 +471,8 @@
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshCube|2021-11-18T14:46:15.005Z|64677",
                                 "pivot": {
-                                  "translation": "[0, 1, -0.30000001192092896]",
-                                  "rotation": "[45, 0, 0]",
+                                  "translation": "[0, 1, 0.30000001192092896]",
+                                  "rotation": "[-45, 0, 0]",
                                   "scaling": "[1, 0.6999999284744263, 0.09999995678663254]"
                                 },
                                 "Component": {
@@ -512,7 +512,7 @@
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshCube|2021-11-18T14:46:15.005Z|64677",
                                 "pivot": {
-                                  "translation": "[0, 0.5000001192092896, -1]",
+                                  "translation": "[0, 0.5000001192092896, 1]",
                                   "rotation": "[0, 0, 0]",
                                   "scaling": "[1, 0.30000001192092896, 0.2999999225139618]"
                                 },
@@ -558,7 +558,7 @@
                                     "ƒ.ComponentMesh": {
                                       "idMesh": "MeshCube|2021-11-18T14:46:15.005Z|64677",
                                       "pivot": {
-                                        "translation": "[0.37999996542930603, 0.7500001192092896, -1.010999321937561]",
+                                        "translation": "[0.37999996542930603, 0.7500001192092896, 1.0110000371932983]",
                                         "rotation": "[0, 0, 0]",
                                         "scaling": "[0.15000000596046448, 0.12999999523162842, -0.019999999552965164]"
                                       },
@@ -599,7 +599,7 @@
                                     "ƒ.ComponentMesh": {
                                       "idMesh": "MeshCube|2021-11-18T14:46:15.005Z|64677",
                                       "pivot": {
-                                        "translation": "[-0.37999996542930603, 0.7500001192092896, -1.010999321937561]",
+                                        "translation": "[-0.37999996542930603, 0.7500001192092896, 1.011000633239746]",
                                         "rotation": "[0, 0, 0]",
                                         "scaling": "[0.15000000596046448, 0.12999999523162842, -0.019999999552965164]"
                                       },
