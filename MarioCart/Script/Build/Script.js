@@ -48,6 +48,9 @@ var Script;
     let meshTerrain;
     let camera = new ƒ.Node("cameraNode");
     let cmpCamera = new ƒ.ComponentCamera();
+    let frictionMap;
+    let frictionMultiplier;
+    let ctx;
     let ctrForward = new ƒ.Control("Forward", 7000, 0 /* PROPORTIONAL */);
     ctrForward.setDelay(500);
     let ctrTurn = new ƒ.Control("Turn", 220, 0 /* PROPORTIONAL */);
@@ -63,6 +66,13 @@ var Script;
         cartBody = cart.getComponent(ƒ.ComponentRigidbody);
         dampTranslation = cartBody.dampTranslation;
         dampRotation = cartBody.dampRotation;
+        frictionMap = new Image(1000, 1000);
+        frictionMap.src = "../Image/frictionMap.png";
+        let canvas = document.createElement('canvas');
+        canvas.width = frictionMap.width;
+        canvas.height = frictionMap.height;
+        ctx = canvas.getContext('2d');
+        ctx.drawImage(frictionMap, 0, 0);
         cameraTrackCart();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(); // start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -87,7 +97,7 @@ var Script;
             cartBody.dampRotation = dampRotation;
             let forward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
             ctrForward.setInput(forward);
-            cartBody.applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput()));
+            cartBody.applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput() * frictionMultiplier));
             let turn = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
             ctrTurn.setInput(turn);
             cartBody.applyTorque(ƒ.Vector3.SCALE(cart.mtxLocal.getY(), ctrTurn.getOutput()));
@@ -100,9 +110,22 @@ var Script;
         let terrainInfo = meshTerrain.getTerrainInfo(cart.mtxLocal.translation, mtxTerrain);
         cart.mtxLocal.translation = terrainInfo.position;
         cart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, cart.mtxLocal.getZ()), terrainInfo.normal);
+        terrainFriction();
         ƒ.Physics.world.simulate(); // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
+    }
+    function terrainFriction() {
+        let cartPosition = meshTerrain.getTerrainInfo(cart.mtxWorld.translation, mtxTerrain);
+        let posX = Math.floor(cartPosition.position.x);
+        let posY = Math.floor(cartPosition.position.z);
+        let imageColorData = ctx.getImageData(posX, posY, 1, 1);
+        if (imageColorData.data[0] < 128 && imageColorData.data[1] < 128 && imageColorData.data[2] < 128) {
+            frictionMultiplier = 0.3;
+        }
+        else {
+            frictionMultiplier = 1;
+        }
     }
     function cameraTrackCart() {
         cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 10, -18);

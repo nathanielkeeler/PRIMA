@@ -18,6 +18,10 @@ namespace Script {
   let camera: ƒ.Node = new ƒ.Node("cameraNode");
   let cmpCamera = new ƒ.ComponentCamera();
 
+  let frictionMap: TexImageSource;
+  let frictionMultiplier: number;
+  let ctx: CanvasRenderingContext2D;
+
   let ctrForward: ƒ.Control = new ƒ.Control("Forward", 7000, ƒ.CONTROL_TYPE.PROPORTIONAL);
   ctrForward.setDelay(500);
   let ctrTurn: ƒ.Control = new ƒ.Control("Turn", 220, ƒ.CONTROL_TYPE.PROPORTIONAL);
@@ -40,6 +44,14 @@ namespace Script {
     cartBody = cart.getComponent(ƒ.ComponentRigidbody);
     dampTranslation = cartBody.dampTranslation;
     dampRotation = cartBody.dampRotation;
+
+    frictionMap = new Image(1000, 1000);
+    frictionMap.src = "../Image/frictionMap.png";
+    let canvas = document.createElement('canvas');
+    canvas.width = frictionMap.width;
+    canvas.height = frictionMap.height;
+    ctx = canvas.getContext('2d');
+    ctx.drawImage(frictionMap, 0, 0)
 
     cameraTrackCart();
 
@@ -72,7 +84,7 @@ namespace Script {
 
       let forward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
       ctrForward.setInput(forward);
-      cartBody.applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput()));
+      cartBody.applyForce(ƒ.Vector3.SCALE(cart.mtxLocal.getZ(), ctrForward.getOutput() * frictionMultiplier));
       
       let turn: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]);
       ctrTurn.setInput(turn);
@@ -88,6 +100,8 @@ namespace Script {
     let terrainInfo: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(cart.mtxLocal.translation, mtxTerrain);
     cart.mtxLocal.translation = terrainInfo.position;
     cart.mtxLocal.showTo(ƒ.Vector3.SUM(terrainInfo.position, cart.mtxLocal.getZ()), terrainInfo.normal);
+
+    terrainFriction();
     
     ƒ.Physics.world.simulate();  // if physics is included and used
     viewport.draw();
@@ -95,7 +109,21 @@ namespace Script {
   }
 
 
-  function cameraTrackCart() {
+  function terrainFriction(): void {
+    let cartPosition: ƒ.TerrainInfo = meshTerrain.getTerrainInfo(cart.mtxWorld.translation, mtxTerrain);
+    let posX: number = Math.floor(cartPosition.position.x);
+    let posY: number = Math.floor(cartPosition.position.z);
+
+    let imageColorData: ImageData = ctx.getImageData(posX, posY, 1, 1);
+    if(imageColorData.data[0] < 128 && imageColorData.data[1] < 128 && imageColorData.data[2] < 128) {
+      frictionMultiplier = 0.3;
+    } else {
+      frictionMultiplier = 1;
+    }
+  }
+
+
+  function cameraTrackCart(): void {
     cmpCamera.mtxPivot.translation = new ƒ.Vector3(0, 10, -18);
     cmpCamera.mtxPivot.rotation = new ƒ.Vector3(22, 0, 0);
 
