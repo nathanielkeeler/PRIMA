@@ -46,7 +46,6 @@ var Script;
     let grid;
     let direction = ƒ.Vector2.ZERO();
     let soundWaka;
-    let ctrXY = new ƒ.Control("Forward", 1, 0 /* PROPORTIONAL */);
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {

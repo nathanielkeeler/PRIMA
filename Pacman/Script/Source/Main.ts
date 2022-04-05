@@ -9,8 +9,6 @@ namespace Script {
   let direction: ƒ.Vector2 = ƒ.Vector2.ZERO();
   let soundWaka: ƒ.ComponentAudio;
 
-  let ctrXY: ƒ.Control = new ƒ.Control("Forward", 1, ƒ.CONTROL_TYPE.PROPORTIONAL);
-
   let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
@@ -71,6 +69,7 @@ namespace Script {
     }
 
     pacman.mtxLocal.translate(ƒ.Vector2.SCALE(direction, pacmanSpeed).toVector3());
+    
     viewport.draw();
     // ƒ.AudioManager.default.update();
   }
