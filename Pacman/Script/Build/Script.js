@@ -66,7 +66,6 @@ var Script;
         let posPacman = pacman.mtxLocal.translation;
         let nearestGridPoint = new ƒ.Vector2(Math.round(posPacman.x), Math.round(posPacman.y));
         let nearGridPoint = posPacman.toVector2().equals(nearestGridPoint, 2 * pacmanSpeed);
-        console.log(posPacman);
         if (nearGridPoint) {
             let directionOld = direction.clone;
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
