@@ -61,17 +61,17 @@ namespace Script {
       if (!direction.equals(directionOld) || direction.equals(ƒ.Vector2.ZERO()))
         pacman.mtxLocal.translation = nearestGridPoint.toVector3();
 
-      if (direction.equals(ƒ.Vector2.ZERO()))
-        soundWaka.play(false);
-      else if (!soundWaka.isPlaying)
-        soundWaka.play(true);
+      // if (direction.equals(ƒ.Vector2.ZERO()))
+      //   soundWaka.play(false);
+      // else if (!soundWaka.isPlaying)
+      //   soundWaka.play(true);
 
     }
 
     pacman.mtxLocal.translate(ƒ.Vector2.SCALE(direction, pacmanSpeed).toVector3());
     
     viewport.draw();
-    // ƒ.AudioManager.default.update();
+    ƒ.AudioManager.default.update();
   }
 
   function blocked(_posCheck: ƒ.Vector2): boolean {
