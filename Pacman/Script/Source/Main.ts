@@ -4,24 +4,24 @@ namespace Pacman {
 
   let graph: ƒ.Node;
   let pacman: ƒ.Node;
-  let pacmanSpeed: number = 0.025;
+  let pacmanSpeed: number = 0.02;
   let ghost: ƒ.Node;
   let grid: ƒ.Node;
   let direction: ƒ.Vector2 = ƒ.Vector2.ZERO();
   let soundWaka: ƒ.ComponentAudio;
 
   let viewport: ƒ.Viewport;
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <any>start);
 
 
 
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
     viewport.camera.mtxPivot.translateZ(-10);
 
     graph = viewport.getBranch();
     pacman = graph.getChildrenByName("Pacman")[0];
-    initSprites(pacman);
+    await initSprites(pacman);
     grid = graph.getChildrenByName("Grid")[0];
 
     ghost = createGhost();
@@ -45,16 +45,22 @@ namespace Pacman {
     
     if (nearGridPoint) {
       let directionOld: ƒ.Vector2 = direction.clone;
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
+      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
         direction.set(1, 0);
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]))
+        spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, 0);
+      }
+      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
         direction.set(-1, 0);
-        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W]))
+        spriteNode.mtxLocal.rotation = new ƒ.Vector3(180, 0, 180);
+      }
+      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
         direction.set(0, 1);
-        rotateSpriteUp();
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]))
+        spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, 90);
+      }
+      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S])) {
         direction.set(0, -1);
-        rotateSpriteDown();
+        spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, -90);
+      }
 
 
       if (blocked(ƒ.Vector2.SUM(nearestGridPoint, direction)))

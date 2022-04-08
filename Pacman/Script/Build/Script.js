@@ -42,19 +42,19 @@ var Pacman;
     ƒ.Debug.info("Main Program Template running!");
     let graph;
     let pacman;
-    let pacmanSpeed = 0.025;
+    let pacmanSpeed = 0.02;
     let ghost;
     let grid;
     let direction = ƒ.Vector2.ZERO();
     let soundWaka;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
-    function start(_event) {
+    async function start(_event) {
         viewport = _event.detail;
         viewport.camera.mtxPivot.translateZ(-10);
         graph = viewport.getBranch();
         pacman = graph.getChildrenByName("Pacman")[0];
-        Pacman.initSprites(pacman);
+        await Pacman.initSprites(pacman);
         grid = graph.getChildrenByName("Grid")[0];
         ghost = createGhost();
         graph.addChild(ghost);
@@ -70,16 +70,22 @@ var Pacman;
         let nearGridPoint = posPacman.toVector2().equals(nearestGridPoint, 2 * pacmanSpeed);
         if (nearGridPoint) {
             let directionOld = direction.clone;
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
                 direction.set(1, 0);
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]))
+                Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, 0);
+            }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
                 direction.set(-1, 0);
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W]))
+                Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(180, 0, 180);
+            }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
                 direction.set(0, 1);
-            Pacman.rotateSpriteUp();
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]))
+                Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, 90);
+            }
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S])) {
                 direction.set(0, -1);
-            Pacman.rotateSpriteDown();
+                Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, -90);
+            }
             if (blocked(ƒ.Vector2.SUM(nearestGridPoint, direction)))
                 if (direction.equals(directionOld)) // did not turn
                     direction.set(0, 0); // full stop
@@ -131,16 +137,15 @@ var Pacman;
     var ƒ = FudgeCore;
     var ƒAid = FudgeAid;
     let spriteAnimations;
-    let spriteNode;
     async function initSprites(_node) {
         await loadSprites();
-        spriteNode = new ƒAid.NodeSprite("Sprite");
-        spriteNode.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
-        spriteNode.setAnimation(spriteAnimations["Pacman"]);
-        spriteNode.setFrameDirection(1);
-        spriteNode.mtxLocal.translateY(0);
-        spriteNode.framerate = 15;
-        _node.addChild(spriteNode);
+        Pacman.spriteNode = new ƒAid.NodeSprite("Sprite");
+        Pacman.spriteNode.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
+        Pacman.spriteNode.setAnimation(spriteAnimations["Pacman"]);
+        Pacman.spriteNode.setFrameDirection(1);
+        Pacman.spriteNode.mtxLocal.translateY(0);
+        Pacman.spriteNode.framerate = 15;
+        _node.addChild(Pacman.spriteNode);
         _node.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0, 0, 0, 0);
     }
     Pacman.initSprites = initSprites;
@@ -159,13 +164,5 @@ var Pacman;
         spriteAnimations[name] = sprite;
     }
     Pacman.generateSprites = generateSprites;
-    async function rotateSpriteUp() {
-        spriteNode.mtxLocal.rotateZ(-90);
-    }
-    Pacman.rotateSpriteUp = rotateSpriteUp;
-    async function rotateSpriteDown() {
-        spriteNode.mtxLocal.rotateZ(90);
-    }
-    Pacman.rotateSpriteDown = rotateSpriteDown;
 })(Pacman || (Pacman = {}));
 //# sourceMappingURL=Script.js.map
