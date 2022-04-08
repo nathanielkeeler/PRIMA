@@ -8,6 +8,7 @@ namespace Pacman {
   let ghost: ƒ.Node;
   let grid: ƒ.Node;
   let direction: ƒ.Vector2 = ƒ.Vector2.ZERO();
+  let soundBeginning: ƒ.ComponentAudio;
   let soundWaka: ƒ.ComponentAudio;
 
   let viewport: ƒ.Viewport;
@@ -28,6 +29,8 @@ namespace Pacman {
     graph.addChild(ghost);
 
     ƒ.AudioManager.default.listenTo(graph);
+    soundBeginning = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[0];
+    soundBeginning.play(true);
     soundWaka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
@@ -117,7 +120,6 @@ namespace Pacman {
   }
 
   function updateGhost() {
-    // KI
     // Gridpoint aussuchen und hin translieren
     // an gridpoint ja nein?
     // ansonsten lauf zum

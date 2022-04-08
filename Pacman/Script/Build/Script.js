@@ -46,6 +46,7 @@ var Pacman;
     let ghost;
     let grid;
     let direction = ƒ.Vector2.ZERO();
+    let soundBeginning;
     let soundWaka;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
@@ -59,6 +60,8 @@ var Pacman;
         ghost = createGhost();
         graph.addChild(ghost);
         ƒ.AudioManager.default.listenTo(graph);
+        soundBeginning = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[0];
+        soundBeginning.play(true);
         soundWaka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
@@ -126,7 +129,6 @@ var Pacman;
         return node;
     }
     function updateGhost() {
-        // KI
         // Gridpoint aussuchen und hin translieren
         // an gridpoint ja nein?
         // ansonsten lauf zum
