@@ -1,10 +1,11 @@
-namespace Script {
+namespace Pacman {
   import ƒ = FudgeCore;
   ƒ.Debug.info("Main Program Template running!");
 
   let graph: ƒ.Node;
   let pacman: ƒ.Node;
   let pacmanSpeed: number = 0.025;
+  let ghost: ƒ.Node;
   let grid: ƒ.Node;
   let direction: ƒ.Vector2 = ƒ.Vector2.ZERO();
   let soundWaka: ƒ.ComponentAudio;
@@ -12,15 +13,19 @@ namespace Script {
   let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
+
+
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
     viewport.camera.mtxPivot.translateZ(-10);
 
     graph = viewport.getBranch();
     pacman = graph.getChildrenByName("Pacman")[0];
+    initSprites(pacman);
     grid = graph.getChildrenByName("Grid")[0];
 
-    console.log(pacman);
+    ghost = createGhost();
+    graph.addChild(ghost);
 
     ƒ.AudioManager.default.listenTo(graph);
     soundWaka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
@@ -28,6 +33,8 @@ namespace Script {
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();
   }
+
+
 
   function update(_event: Event): void {
     // ƒ.Physics.simulate();
@@ -40,12 +47,14 @@ namespace Script {
       let directionOld: ƒ.Vector2 = direction.clone;
       if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
         direction.set(1, 0);
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]))
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]))
         direction.set(-1, 0);
-      if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W]))
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W]))
         direction.set(0, 1);
+        rotateSpriteUp();
       if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]))
         direction.set(0, -1);
+        rotateSpriteDown();
 
 
       if (blocked(ƒ.Vector2.SUM(nearestGridPoint, direction)))
@@ -74,8 +83,38 @@ namespace Script {
     ƒ.AudioManager.default.update();
   }
 
+
+
   function blocked(_posCheck: ƒ.Vector2): boolean {
     let check: ƒ.Node = grid.getChild(_posCheck.y)?.getChild(_posCheck.x)?.getChild(0);
     return (!check || check.name == "Wall");
   }
+
+  function createGhost(): ƒ.Node {
+    let node: ƒ.Node = new ƒ.Node("Ghost");
+    let mesh: ƒ.MeshSphere = new ƒ.MeshSphere("meshGhost");
+    let material: ƒ.Material = new ƒ.Material("mtrGhost", ƒ.ShaderLit, new ƒ.CoatColored()); //standard color is white
+    
+    let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
+    cmpMesh.mtxPivot.scale(new ƒ.Vector3(0.8, 0.8, 0.8));
+    let cmpMaterial: ƒ.ComponentMaterial= new ƒ.ComponentMaterial(material);
+    cmpMaterial.clrPrimary = new ƒ.Color(255, 0, 0);
+    let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform();
+
+    node.addComponent(cmpMesh);
+    node.addComponent(cmpMaterial);
+    node.addComponent(cmpTransform);
+
+    node.mtxLocal.translate(new ƒ.Vector3(2, 1, 0));
+
+    return node;
+  }
+
+  function updateGhost() {
+    // KI
+    // Gridpoint aussuchen und hin translieren
+    // an gridpoint ja nein?
+    // ansonsten lauf zum
+  }
 }
+

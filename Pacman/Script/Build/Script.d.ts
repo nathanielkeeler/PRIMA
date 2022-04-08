@@ -7,5 +7,13 @@ declare namespace Script {
         hndEvent: (_event: Event) => void;
     }
 }
-declare namespace Script {
+declare namespace Pacman {
+}
+declare namespace Pacman {
+    import ƒ = FudgeCore;
+    function initSprites(_node: ƒ.Node): Promise<void>;
+    function loadSprites(): Promise<void>;
+    function generateSprites(_spritesheet: ƒ.CoatTextured): void;
+    function rotateSpriteUp(): Promise<void>;
+    function rotateSpriteDown(): Promise<void>;
 }

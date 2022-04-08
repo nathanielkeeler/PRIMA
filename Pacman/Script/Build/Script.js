@@ -36,13 +36,14 @@ var Script;
     }
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
-var Script;
-(function (Script) {
+var Pacman;
+(function (Pacman) {
     var ƒ = FudgeCore;
     ƒ.Debug.info("Main Program Template running!");
     let graph;
     let pacman;
     let pacmanSpeed = 0.025;
+    let ghost;
     let grid;
     let direction = ƒ.Vector2.ZERO();
     let soundWaka;
@@ -53,8 +54,10 @@ var Script;
         viewport.camera.mtxPivot.translateZ(-10);
         graph = viewport.getBranch();
         pacman = graph.getChildrenByName("Pacman")[0];
+        Pacman.initSprites(pacman);
         grid = graph.getChildrenByName("Grid")[0];
-        console.log(pacman);
+        ghost = createGhost();
+        graph.addChild(ghost);
         ƒ.AudioManager.default.listenTo(graph);
         soundWaka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -73,8 +76,10 @@ var Script;
                 direction.set(-1, 0);
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W]))
                 direction.set(0, 1);
+            Pacman.rotateSpriteUp();
             if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]))
                 direction.set(0, -1);
+            Pacman.rotateSpriteDown();
             if (blocked(ƒ.Vector2.SUM(nearestGridPoint, direction)))
                 if (direction.equals(directionOld)) // did not turn
                     direction.set(0, 0); // full stop
@@ -99,5 +104,68 @@ var Script;
         let check = grid.getChild(_posCheck.y)?.getChild(_posCheck.x)?.getChild(0);
         return (!check || check.name == "Wall");
     }
-})(Script || (Script = {}));
+    function createGhost() {
+        let node = new ƒ.Node("Ghost");
+        let mesh = new ƒ.MeshSphere("meshGhost");
+        let material = new ƒ.Material("mtrGhost", ƒ.ShaderLit, new ƒ.CoatColored()); //standard color is white
+        let cmpMesh = new ƒ.ComponentMesh(mesh);
+        cmpMesh.mtxPivot.scale(new ƒ.Vector3(0.8, 0.8, 0.8));
+        let cmpMaterial = new ƒ.ComponentMaterial(material);
+        cmpMaterial.clrPrimary = new ƒ.Color(255, 0, 0);
+        let cmpTransform = new ƒ.ComponentTransform();
+        node.addComponent(cmpMesh);
+        node.addComponent(cmpMaterial);
+        node.addComponent(cmpTransform);
+        node.mtxLocal.translate(new ƒ.Vector3(2, 1, 0));
+        return node;
+    }
+    function updateGhost() {
+        // KI
+        // Gridpoint aussuchen und hin translieren
+        // an gridpoint ja nein?
+        // ansonsten lauf zum
+    }
+})(Pacman || (Pacman = {}));
+var Pacman;
+(function (Pacman) {
+    var ƒ = FudgeCore;
+    var ƒAid = FudgeAid;
+    let spriteAnimations;
+    let spriteNode;
+    async function initSprites(_node) {
+        await loadSprites();
+        spriteNode = new ƒAid.NodeSprite("Sprite");
+        spriteNode.addComponent(new ƒ.ComponentTransform(new ƒ.Matrix4x4()));
+        spriteNode.setAnimation(spriteAnimations["Pacman"]);
+        spriteNode.setFrameDirection(1);
+        spriteNode.mtxLocal.translateY(0);
+        spriteNode.framerate = 15;
+        _node.addChild(spriteNode);
+        _node.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0, 0, 0, 0);
+    }
+    Pacman.initSprites = initSprites;
+    async function loadSprites() {
+        let imgSpriteSheet = new ƒ.TextureImage();
+        await imgSpriteSheet.load("Sprites/sprites.png");
+        let spriteSheet = new ƒ.CoatTextured(new ƒ.Color(), imgSpriteSheet);
+        generateSprites(spriteSheet);
+    }
+    Pacman.loadSprites = loadSprites;
+    function generateSprites(_spritesheet) {
+        spriteAnimations = {};
+        let name = "Pacman";
+        let sprite = new ƒAid.SpriteSheetAnimation(name, _spritesheet);
+        sprite.generateByGrid(ƒ.Rectangle.GET(0, 0, 64, 64), 6, 70, ƒ.ORIGIN2D.CENTER, ƒ.Vector2.X(64));
+        spriteAnimations[name] = sprite;
+    }
+    Pacman.generateSprites = generateSprites;
+    async function rotateSpriteUp() {
+        spriteNode.mtxLocal.rotateZ(-90);
+    }
+    Pacman.rotateSpriteUp = rotateSpriteUp;
+    async function rotateSpriteDown() {
+        spriteNode.mtxLocal.rotateZ(90);
+    }
+    Pacman.rotateSpriteDown = rotateSpriteDown;
+})(Pacman || (Pacman = {}));
 //# sourceMappingURL=Script.js.map
