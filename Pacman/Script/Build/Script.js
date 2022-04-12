@@ -39,14 +39,15 @@ var Script;
 var Pacman;
 (function (Pacman) {
     var ƒ = FudgeCore;
-    ƒ.Debug.info("Main Program Template running!");
     let graph;
     let pacman;
     let pacmanSpeed = 0.02;
     let ghost;
+    let ghostSpeed = 0.02;
+    let directionGhost;
     let grid;
     let direction = ƒ.Vector2.ZERO();
-    let soundBeginning;
+    let soundIntro;
     let soundWaka;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
@@ -59,10 +60,7 @@ var Pacman;
         grid = graph.getChildrenByName("Grid")[0];
         ghost = createGhost();
         graph.addChild(ghost);
-        ƒ.AudioManager.default.listenTo(graph);
-        soundBeginning = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[0];
-        soundBeginning.play(true);
-        soundWaka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
+        initAudio();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
     }
@@ -73,22 +71,14 @@ var Pacman;
         let nearGridPoint = posPacman.toVector2().equals(nearestGridPoint, 2 * pacmanSpeed);
         if (nearGridPoint) {
             let directionOld = direction.clone;
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D])) {
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_RIGHT, ƒ.KEYBOARD_CODE.D]))
                 direction.set(1, 0);
-                Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, 0);
-            }
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A])) {
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_LEFT, ƒ.KEYBOARD_CODE.A]))
                 direction.set(-1, 0);
-                Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(180, 0, 180);
-            }
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W])) {
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_UP, ƒ.KEYBOARD_CODE.W]))
                 direction.set(0, 1);
-                Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, 90);
-            }
-            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S])) {
+            if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.ARROW_DOWN, ƒ.KEYBOARD_CODE.S]))
                 direction.set(0, -1);
-                Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, 0, -90);
-            }
             if (blocked(ƒ.Vector2.SUM(nearestGridPoint, direction)))
                 if (direction.equals(directionOld)) // did not turn
                     direction.set(0, 0); // full stop
@@ -98,14 +88,23 @@ var Pacman;
                     else
                         direction = directionOld; // don't turn but continue ahead
                 }
-            if (!direction.equals(directionOld) || direction.equals(ƒ.Vector2.ZERO()))
+            if (!direction.equals(directionOld) || direction.magnitudeSquared == 0)
                 pacman.mtxLocal.translation = nearestGridPoint.toVector3();
-            // if (direction.equals(ƒ.Vector2.ZERO()))
-            //   soundWaka.play(false);
-            // else if (!soundWaka.isPlaying)
-            //   soundWaka.play(true);
+            if (direction.magnitudeSquared == 0) {
+                soundWaka.play(false);
+                Pacman.spriteNode.setFrameDirection(0);
+            }
+            else if (!soundWaka.isPlaying) {
+                soundWaka.play(true);
+                Pacman.spriteNode.setFrameDirection(3);
+            }
         }
         pacman.mtxLocal.translate(ƒ.Vector2.SCALE(direction, pacmanSpeed).toVector3());
+        if (direction.magnitudeSquared != 0) {
+            Pacman.spriteNode.mtxLocal.reset();
+            Pacman.spriteNode.mtxLocal.rotation = new ƒ.Vector3(0, direction.x < 0 ? 180 : 0, direction.y * 90);
+        }
+        updateGhost();
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
@@ -116,7 +115,7 @@ var Pacman;
     function createGhost() {
         let node = new ƒ.Node("Ghost");
         let mesh = new ƒ.MeshSphere("meshGhost");
-        let material = new ƒ.Material("mtrGhost", ƒ.ShaderLit, new ƒ.CoatColored()); //standard color is white
+        let material = new ƒ.Material("mtrGhost", ƒ.ShaderLit, new ƒ.CoatColored());
         let cmpMesh = new ƒ.ComponentMesh(mesh);
         cmpMesh.mtxPivot.scale(new ƒ.Vector3(0.8, 0.8, 0.8));
         let cmpMaterial = new ƒ.ComponentMaterial(material);
@@ -129,9 +128,18 @@ var Pacman;
         return node;
     }
     function updateGhost() {
+        let targetPos = pacman.mtxLocal.translation;
+        directionGhost = new ƒ.Vector2(-targetPos.x, -targetPos.y);
+        ghost.mtxLocal.translate(ƒ.Vector2.SCALE(directionGhost, ghostSpeed).toVector3());
         // Gridpoint aussuchen und hin translieren
         // an gridpoint ja nein?
         // ansonsten lauf zum
+    }
+    function initAudio() {
+        ƒ.AudioManager.default.listenTo(graph);
+        soundIntro = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[0];
+        // soundBeginning.play(true);
+        soundWaka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
     }
 })(Pacman || (Pacman = {}));
 var Pacman;
@@ -146,7 +154,7 @@ var Pacman;
         Pacman.spriteNode.setAnimation(spriteAnimations["Pacman"]);
         Pacman.spriteNode.setFrameDirection(1);
         Pacman.spriteNode.mtxLocal.translateY(0);
-        Pacman.spriteNode.framerate = 15;
+        Pacman.spriteNode.framerate = 8;
         _node.addChild(Pacman.spriteNode);
         _node.getComponent(ƒ.ComponentMaterial).clrPrimary = new ƒ.Color(0, 0, 0, 0);
     }
@@ -160,10 +168,10 @@ var Pacman;
     Pacman.loadSprites = loadSprites;
     function generateSprites(_spritesheet) {
         spriteAnimations = {};
-        let name = "Pacman";
-        let sprite = new ƒAid.SpriteSheetAnimation(name, _spritesheet);
+        let spriteName = "Pacman";
+        let sprite = new ƒAid.SpriteSheetAnimation(spriteName, _spritesheet);
         sprite.generateByGrid(ƒ.Rectangle.GET(0, 0, 64, 64), 6, 70, ƒ.ORIGIN2D.CENTER, ƒ.Vector2.X(64));
-        spriteAnimations[name] = sprite;
+        spriteAnimations[spriteName] = sprite;
     }
     Pacman.generateSprites = generateSprites;
 })(Pacman || (Pacman = {}));
