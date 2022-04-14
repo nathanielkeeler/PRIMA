@@ -131,14 +131,11 @@ var Pacman;
         let targetPos = pacman.mtxLocal.translation;
         directionGhost = new ƒ.Vector2(-targetPos.x, -targetPos.y);
         ghost.mtxLocal.translate(ƒ.Vector2.SCALE(directionGhost, ghostSpeed).toVector3());
-        // Gridpoint aussuchen und hin translieren
-        // an gridpoint ja nein?
-        // ansonsten lauf zum
     }
     function initAudio() {
         ƒ.AudioManager.default.listenTo(graph);
         soundIntro = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[0];
-        // soundBeginning.play(true);
+        soundIntro.play(true);
         soundWaka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
     }
 })(Pacman || (Pacman = {}));

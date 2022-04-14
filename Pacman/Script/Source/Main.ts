@@ -109,8 +109,10 @@ namespace Pacman {
 
     let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(mesh);
     cmpMesh.mtxPivot.scale(new ƒ.Vector3(0.8, 0.8, 0.8));
+
     let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(material);
     cmpMaterial.clrPrimary = new ƒ.Color(255, 0, 0);
+
     let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform();
 
     node.addComponent(cmpMesh);
@@ -126,16 +128,12 @@ namespace Pacman {
     let targetPos: ƒ.Vector3 = pacman.mtxLocal.translation
     directionGhost = new ƒ.Vector2(-targetPos.x, -targetPos.y);
     ghost.mtxLocal.translate(ƒ.Vector2.SCALE(directionGhost, ghostSpeed).toVector3());
-
-    // Gridpoint aussuchen und hin translieren
-    // an gridpoint ja nein?
-    // ansonsten lauf zum
   }
 
   function initAudio(): void {
     ƒ.AudioManager.default.listenTo(graph);
     soundIntro = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[0];
-    // soundBeginning.play(true);
+    soundIntro.play(true);
     soundWaka = graph.getChildrenByName("Sound")[0].getComponents(ƒ.ComponentAudio)[1];
   }
 }
