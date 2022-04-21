@@ -137,10 +137,7 @@
                       "ƒ.Node": {
                         "name": "Wall",
                         "active": true,
-                        "components": {
-                          "ComponentMesh": [],
-                          "ComponentMaterial": []
-                        },
+                        "components": {},
                         "children": []
                       }
                     }
@@ -171,7 +168,7 @@
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshCube|2022-04-21T10:28:58.019Z|60616",
                                 "pivot": {
-                                  "translation": "[0, 1, 0]",
+                                  "translation": "[0, 1.7000001668930054, 0]",
                                   "rotation": "[0, 0, 0]",
                                   "scaling": "[0.10000000149011612, 0.15000000596046448, 0]"
                                 },
@@ -213,7 +210,7 @@
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshCube|2022-04-21T10:28:58.019Z|60616",
                                 "pivot": {
-                                  "translation": "[0.5, 1, 0]",
+                                  "translation": "[0.5, 1.7000001668930054, 0]",
                                   "rotation": "[0, 0, 0]",
                                   "scaling": "[0.10000000149011612, 0.15000000596046448, 0]"
                                 },
@@ -255,7 +252,7 @@
                               "ƒ.ComponentMesh": {
                                 "idMesh": "MeshCube|2022-04-21T10:28:58.019Z|60616",
                                 "pivot": {
-                                  "translation": "[1, 1, 0]",
+                                  "translation": "[1, 1.7000001668930054, 0]",
                                   "rotation": "[0, 0, 0]",
                                   "scaling": "[0.10000000149011612, 0.15000000596046448, 0]"
                                 },
@@ -375,7 +372,22 @@
           "ƒ.Node": {
             "name": "Player",
             "active": true,
-            "components": {},
+            "components": {
+              "ComponentTransform": [
+                {
+                  "ƒ.ComponentTransform": {
+                    "local": {
+                      "translation": "[0, 0, -1]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[1, 1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ]
+            },
             "children": [
               {
                 "ƒ.Node": {
@@ -399,7 +411,7 @@
                           "pivot": {
                             "translation": "[0, 0, 0]",
                             "rotation": "[0, 0, 0]",
-                            "scaling": "[1, 1, 1]"
+                            "scaling": "[0.09999992698431015, 0.09999992698431015, 0.09999998658895493]"
                           },
                           "Component": {
                             "active": true
