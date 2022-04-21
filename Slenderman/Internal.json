@@ -38,6 +38,66 @@
       "type": "MeshCube"
     }
   },
+  "MeshObj|2022-04-21T11:08:47.064Z|39048": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2022-04-21T11:08:47.064Z|39048",
+      "name": "Assets\\wall\\wall.obj",
+      "type": "MeshObj",
+      "url": "Assets\\wall\\wall.obj"
+    }
+  },
+  "Material|2022-04-21T11:11:40.531Z|35461": {
+    "ƒ.Material": {
+      "name": "ShaderWall",
+      "idResource": "Material|2022-04-21T11:11:40.531Z|35461",
+      "shader": "ShaderGouraudTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2022-04-21T11:12:18.765Z|42397",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "TextureImage|2022-04-21T11:12:18.765Z|42397": {
+    "ƒ.TextureImage": {
+      "url": "Assets\\wall\\wall.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2022-04-21T11:12:18.765Z|42397",
+        "name": "Assets\\wall\\wall.jpg",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2022-04-21T10:50:59.365Z|87714": {
+    "ƒ.Material": {
+      "name": "ShaderNote",
+      "idResource": "Material|2022-04-21T10:50:59.365Z|87714",
+      "shader": "ShaderGouraudTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2022-04-21T10:50:49.629Z|62218",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "TextureImage|2022-04-21T10:50:49.629Z|62218": {
+    "ƒ.TextureImage": {
+      "url": "Assets\\note.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2022-04-21T10:50:49.629Z|62218",
+        "name": "note.jpg",
+        "mipmap": "CRISP"
+      }
+    }
+  },
   "Graph|2022-04-12T15:10:16.404Z|44825": {
     "ƒ.Graph": {
       "name": "Scene",
@@ -71,11 +131,20 @@
                 "ƒ.Node": {
                   "name": "Walls",
                   "active": true,
-                  "components": {
-                    "ComponentMesh": [],
-                    "ComponentMaterial": []
-                  },
-                  "children": []
+                  "components": {},
+                  "children": [
+                    {
+                      "ƒ.Node": {
+                        "name": "Wall",
+                        "active": true,
+                        "components": {
+                          "ComponentMesh": [],
+                          "ComponentMaterial": []
+                        },
+                        "children": []
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -362,32 +431,6 @@
       ],
       "idResource": "Graph|2022-04-12T15:10:16.404Z|44825",
       "type": "Graph"
-    }
-  },
-  "TextureImage|2022-04-21T10:50:49.629Z|62218": {
-    "ƒ.TextureImage": {
-      "url": "Assets\\note.jpg",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2022-04-21T10:50:49.629Z|62218",
-        "name": "note.jpg",
-        "mipmap": "CRISP"
-      }
-    }
-  },
-  "Material|2022-04-21T10:50:59.365Z|87714": {
-    "ƒ.Material": {
-      "name": "ShaderNote",
-      "idResource": "Material|2022-04-21T10:50:59.365Z|87714",
-      "shader": "ShaderGouraudTextured",
-      "coat": {
-        "ƒ.CoatRemissiveTextured": {
-          "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2022-04-21T10:50:49.629Z|62218",
-          "diffuse": 1,
-          "specular": 0
-        }
-      }
     }
   }
 }
