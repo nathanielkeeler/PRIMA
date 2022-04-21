@@ -7,5 +7,5 @@ declare namespace Script {
         hndEvent: (_event: Event) => void;
     }
 }
-declare namespace Script {
+declare namespace Slenderman {
 }

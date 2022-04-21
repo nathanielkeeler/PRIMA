@@ -1,4 +1,4 @@
-namespace Script {
+namespace Slenderman {
   import ƒ = FudgeCore;
 
   let viewport: ƒ.Viewport;

@@ -36,8 +36,8 @@ var Script;
     }
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
-var Script;
-(function (Script) {
+var Slenderman;
+(function (Slenderman) {
     var ƒ = FudgeCore;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
@@ -51,5 +51,5 @@ var Script;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
-})(Script || (Script = {}));
+})(Slenderman || (Slenderman = {}));
 //# sourceMappingURL=Script.js.map
