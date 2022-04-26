@@ -13,21 +13,10 @@
       "coat": {
         "ƒ.CoatRemissiveTextured": {
           "color": "[1, 1, 1, 1]",
-          "idTexture": "TextureImage|2022-04-14T13:04:12.592Z|16547",
+          "idTexture": "TextureImage|2022-04-26T11:20:30.897Z|27264",
           "diffuse": 1,
           "specular": 0
         }
-      }
-    }
-  },
-  "TextureImage|2022-04-14T13:04:12.592Z|16547": {
-    "ƒ.TextureImage": {
-      "url": "Assets\\ground.jpg",
-      "type": "TextureImage",
-      "Texture": {
-        "idResource": "TextureImage|2022-04-14T13:04:12.592Z|16547",
-        "name": "ground.jpg",
-        "mipmap": "CRISP"
       }
     }
   },
@@ -316,7 +305,7 @@
                           "pivot": {
                             "translation": "[0, 0]",
                             "rotation": 0,
-                            "scaling": "[60, 60]"
+                            "scaling": "[1, 1]"
                           },
                           "Component": {
                             "active": true
@@ -443,6 +432,17 @@
       ],
       "idResource": "Graph|2022-04-12T15:10:16.404Z|44825",
       "type": "Graph"
+    }
+  },
+  "TextureImage|2022-04-26T11:20:30.897Z|27264": {
+    "ƒ.TextureImage": {
+      "url": "Assets\\map_tex.png",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2022-04-26T11:20:30.897Z|27264",
+        "name": "map_tex.png",
+        "mipmap": "CRISP"
+      }
     }
   }
 }

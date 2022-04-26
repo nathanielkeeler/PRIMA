@@ -43,6 +43,7 @@ var Slenderman;
     let root;
     let player;
     let playerCmpCam;
+    let tree;
     let speedRot = 0.1;
     let rotationX = 0;
     let ctrWalk = new ƒ.Control("ctrWalk", 1.5, 0 /* PROPORTIONAL */);
@@ -52,8 +53,8 @@ var Slenderman;
         viewport = _event.detail;
         root = viewport.getBranch();
         player = root.getChildrenByName("Player")[0];
-        playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
-        viewport.camera = playerCmpCam; //Active viewport camera is player view
+        initPlayerView();
+        initTree();
         viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
@@ -80,6 +81,22 @@ var Slenderman;
         let inputRun = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.ALT_LEFT]);
         ctrRun.setInput(inputRun);
         player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    }
+    function initPlayerView() {
+        playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
+        viewport.camera = playerCmpCam; //Active viewport camera is player view
+    }
+    async function initTree() {
+        let meshTree = new ƒ.MeshObj("TreeMesh", "Assets/tree/tree.obj");
+        let cmpMesh = new ƒ.ComponentMesh(meshTree);
+        let treeTex = new ƒ.TextureImage();
+        await treeTex.load("Assets/tree/tree_texture.png");
+        let matTree = new ƒ.Material("TreeMat", ƒ.ShaderGouraudTextured, new ƒ.CoatTextured(new ƒ.Color(), treeTex));
+        let cmpMaterial = new ƒ.ComponentMaterial(matTree);
+        tree.addComponent(cmpMesh);
+        tree.addComponent(cmpMaterial);
+        tree.addComponent(new ƒ.ComponentTransform());
+        root.addChild(tree);
     }
 })(Slenderman || (Slenderman = {}));
 //# sourceMappingURL=Script.js.map
