@@ -10,7 +10,7 @@ namespace Slenderman {
   let rotationX: number = 0;
 
   let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL);
-  // ctrWalk.setDelay(500);
+  let ctrRun: ƒ.Control = new ƒ.Control("ctrRun", 3, ƒ.CONTROL_TYPE.PROPORTIONAL);
 
   document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
@@ -57,6 +57,10 @@ namespace Slenderman {
     let inputSideways: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
     ctrWalk.setInput(inputSideways);
     player.mtxLocal.translateX(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+
+    let inputRun: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.ALT_LEFT]);
+    ctrRun.setInput(inputRun);
+    player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
   }
 }
 

@@ -46,7 +46,7 @@ var Slenderman;
     let speedRot = 0.1;
     let rotationX = 0;
     let ctrWalk = new ƒ.Control("ctrWalk", 1.5, 0 /* PROPORTIONAL */);
-    // ctrWalk.setDelay(500);
+    let ctrRun = new ƒ.Control("ctrRun", 3, 0 /* PROPORTIONAL */);
     document.addEventListener("interactiveViewportStarted", start);
     function start(_event) {
         viewport = _event.detail;
@@ -77,6 +77,9 @@ var Slenderman;
         let inputSideways = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
         ctrWalk.setInput(inputSideways);
         player.mtxLocal.translateX(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        let inputRun = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.ALT_LEFT]);
+        ctrRun.setInput(inputRun);
+        player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
     }
 })(Slenderman || (Slenderman = {}));
 //# sourceMappingURL=Script.js.map
