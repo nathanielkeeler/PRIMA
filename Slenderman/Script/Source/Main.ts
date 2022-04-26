@@ -5,7 +5,7 @@ namespace Slenderman {
   let root: ƒ.Node;
   let player: ƒ.Node;
   let playerCmpCam: ƒ.ComponentCamera;
-  let tree: ƒ.Node;
+  let tree: ƒ.Node = new ƒ.Node("Tree");
 
   let speedRot: number = 0.1;
   let rotationX: number = 0;
@@ -13,17 +13,17 @@ namespace Slenderman {
   let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL);
   let ctrRun: ƒ.Control = new ƒ.Control("ctrRun", 3, ƒ.CONTROL_TYPE.PROPORTIONAL);
 
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <any>start);
 
 
 
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
 
     root = viewport.getBranch();
     player = root.getChildrenByName("Player")[0];
     initPlayerView();
-    initTree();
+    await initTree();
 
 
     viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
@@ -60,7 +60,7 @@ namespace Slenderman {
     ctrWalk.setInput(inputSideways);
     player.mtxLocal.translateX(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
 
-    let inputRun: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.ALT_LEFT]);
+    let inputRun: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.SHIFT_RIGHT]);
     ctrRun.setInput(inputRun);
     player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
   }
@@ -71,12 +71,12 @@ namespace Slenderman {
   }
 
   async function initTree(): Promise<void> {
-    let meshTree: ƒ.Mesh = new ƒ.MeshObj("TreeMesh", "Assets/tree/tree.obj")
+    let meshTree: ƒ.Mesh = new ƒ.MeshObj("TreeMesh", "Assets/tree/ico.obj")
     let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(meshTree);
 
     let treeTex: ƒ.TextureImage = new ƒ.TextureImage();
 		await treeTex.load("Assets/tree/tree_texture.png");
-    let matTree: ƒ.Material = new ƒ.Material("TreeMat", ƒ.ShaderGouraudTextured, new ƒ.CoatTextured(new ƒ.Color(), treeTex));
+    let matTree: ƒ.Material = new ƒ.Material("TreeMat", ƒ.ShaderGouraudTextured, new ƒ.CoatRemissiveTextured(new ƒ.Color(), treeTex));
     let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(matTree);
     
     tree.addComponent(cmpMesh);
