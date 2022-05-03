@@ -76,7 +76,7 @@ namespace Slenderman {
   async function addTrees(): Promise<void> {
     for (let i = 0; i < 20; i++) {
       let treeInstance = await ƒ.Project.createGraphInstance(
-        ƒ.Project.resources["Graph|2022-05-03T11:14:36.695Z|55699"] as ƒ.Graph
+        ƒ.Project.resources["Graph|2022-05-03T11:32:23.947Z|52682"] as ƒ.Graph
       );
       let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
       let heightY: number = randomInt(0.9, 1.3);
