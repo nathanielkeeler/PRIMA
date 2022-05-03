@@ -5,7 +5,7 @@ namespace Slenderman {
   let root: ƒ.Node;
   let player: ƒ.Node;
   let playerCmpCam: ƒ.ComponentCamera;
-  // let tree: ƒ.Node = new ƒ.Node("Tree");
+  let trees: ƒ.Node;
 
   let speedRot: number = 0.1;
   let rotationX: number = 0;
@@ -22,8 +22,9 @@ namespace Slenderman {
 
     root = viewport.getBranch();
     player = root.getChildrenByName("Player")[0];
+    trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
     initPlayerView();
-    // await initTree();
+    // await addTrees();
 
     let canvas: HTMLCanvasElement = viewport.getCanvas();
     canvas.addEventListener("pointermove", hndPointerMove);
@@ -67,25 +68,31 @@ namespace Slenderman {
     player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
   }
 
-  function initPlayerView() {
+  function initPlayerView(): void {
     playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
     viewport.camera = playerCmpCam; //Active viewport camera is player view
   }
 
-  // async function initTree(): Promise<void> {
-  //   let meshTree: ƒ.Mesh = new ƒ.MeshObj("TreeMesh", "Assets/tree/ico.obj")
-  //   let cmpMesh: ƒ.ComponentMesh = new ƒ.ComponentMesh(meshTree);
+  // async function addTrees(): Promise<void> {
+  //   for (let i = 0; i < 20; i++) {
+  //     let treeInstance = await ƒ.Project.createGraphInstance(
+  //       ƒ.Project.resources["Graph|2022-05-03T11:14:36.695Z|55699"] as ƒ.Graph
+  //     );
+  //     let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
+  //     let heightY: number = randomInt(0.9, 1.3);
+  //     let treeHeight = new ƒ.Vector3(1, heightY, 1);
 
-  //   let treeTex: ƒ.TextureImage = new ƒ.TextureImage();
-  // 	await treeTex.load("Assets/tree/tree_texture.png");
-  //   let matTree: ƒ.Material = new ƒ.Material("TreeMat", ƒ.ShaderGouraudTextured, new ƒ.CoatRemissiveTextured(new ƒ.Color(), treeTex));
-  //   let cmpMaterial: ƒ.ComponentMaterial = new ƒ.ComponentMaterial(matTree);
+  //     treeInstance.mtxLocal.translateX(position.x);
+  //     treeInstance.mtxLocal.translateZ(position.z);
+  //     treeInstance.mtxLocal.scale(treeHeight);
 
-  //   tree.addComponent(cmpMesh);
-  //   tree.addComponent(cmpMaterial);
-  //   tree.addComponent(new ƒ.ComponentTransform());
+  //     trees.addChild(treeInstance);
+  //   }
+  // }
 
-  //   root.addChild(tree);
+  // function randomInt(_min: number, _max: number): number {
+  //   let randomNumber: number = Math.random() * (_max - _min) + _min;
+  //   return randomNumber;
   // }
 }
 

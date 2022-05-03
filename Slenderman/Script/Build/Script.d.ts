@@ -7,7 +7,7 @@ declare namespace Script {
         hndEvent: (_event: Event) => void;
     }
 }
-declare namespace Script {
+declare namespace Slenderman {
     import ƒ = FudgeCore;
     class InitGroundPositionScript extends ƒ.ComponentScript {
         static readonly iSubclass: number;

@@ -110,7 +110,7 @@
               },
               "light": {
                 "ƒ.LightDirectional": {
-                  "color": "[0.16862745098039217, 0.16862745098039217, 0.16862745098039217, 1]"
+                  "color": "[0.6313725490196078, 0.6313725490196078, 0.6313725490196078, 1]"
                 }
               },
               "Component": {
@@ -142,8 +142,8 @@
                             {
                               "ƒ.ComponentTransform": {
                                 "local": {
-                                  "translation": "[16, 0, 10]",
-                                  "rotation": "[2.1999998092651367, 0, -4]",
+                                  "translation": "[0, 0, 0]",
+                                  "rotation": "[0, 0, 0]",
                                   "scaling": "[1, 1.100000023841858, 1]"
                                 },
                                 "Component": {
@@ -152,134 +152,91 @@
                               }
                             }
                           ],
-                          "InitGroundPositionScript": [
-                            {
-                              "Script.InitGroundPositionScript": {
-                                "active": true
-                              }
-                            }
-                          ]
+                          "InitGroundPositionScript": []
                         },
                         "children": [
                           {
-                            "ƒ.GraphInstance": {
-                              "deserializeFromSource": true,
-                              "name": "Tree",
-                              "idSource": "Graph|2022-04-26T14:47:40.135Z|21425"
+                            "ƒ.Node": {
+                              "name": "Stem",
+                              "active": true,
+                              "components": {
+                                "ComponentMesh": [
+                                  {
+                                    "ƒ.ComponentMesh": {
+                                      "idMesh": "MeshRotation|2022-04-26T14:29:28.452Z|66296",
+                                      "pivot": {
+                                        "translation": "[0, 2.59999942779541, 0]",
+                                        "rotation": "[0, 0, 0]",
+                                        "scaling": "[0.6000000238418579, 2, 0.5999999046325684]"
+                                      },
+                                      "Component": {
+                                        "active": true
+                                      }
+                                    }
+                                  }
+                                ],
+                                "ComponentMaterial": [
+                                  {
+                                    "ƒ.ComponentMaterial": {
+                                      "sortForAlpha": false,
+                                      "clrPrimary": "[1, 1, 1, 1]",
+                                      "clrSecondary": "[1, 1, 1, 1]",
+                                      "pivot": {
+                                        "translation": "[0, 0]",
+                                        "rotation": 0,
+                                        "scaling": "[1, 1]"
+                                      },
+                                      "Component": {
+                                        "active": true
+                                      },
+                                      "idMaterial": "Material|2022-04-26T14:32:03.556Z|44275"
+                                    }
+                                  }
+                                ]
+                              },
+                              "children": []
                             }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "ƒ.Node": {
-                        "name": "Tree",
-                        "active": true,
-                        "components": {
-                          "ComponentTransform": [
-                            {
-                              "ƒ.ComponentTransform": {
-                                "local": {
-                                  "translation": "[6, 0, 8]",
-                                  "rotation": "[7.199999809265137, 0, 1]",
-                                  "scaling": "[1, 1.100000023841858, 1]"
-                                },
-                                "Component": {
-                                  "active": true
-                                }
-                              }
-                            }
-                          ],
-                          "InitGroundPositionScript": [
-                            {
-                              "Script.InitGroundPositionScript": {
-                                "active": true
-                              }
-                            }
-                          ]
-                        },
-                        "children": [
+                          },
                           {
-                            "ƒ.GraphInstance": {
-                              "deserializeFromSource": true,
-                              "name": "Tree",
-                              "idSource": "Graph|2022-04-26T14:47:40.135Z|21425"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "ƒ.Node": {
-                        "name": "Tree",
-                        "active": true,
-                        "components": {
-                          "ComponentTransform": [
-                            {
-                              "ƒ.ComponentTransform": {
-                                "local": {
-                                  "translation": "[-5, 0, -8]",
-                                  "rotation": "[2.1999998092651367, 0, 6]",
-                                  "scaling": "[1, 1.100000023841858, 1]"
-                                },
-                                "Component": {
-                                  "active": true
-                                }
-                              }
-                            }
-                          ],
-                          "InitGroundPositionScript": [
-                            {
-                              "Script.InitGroundPositionScript": {
-                                "active": true
-                              }
-                            }
-                          ]
-                        },
-                        "children": [
-                          {
-                            "ƒ.GraphInstance": {
-                              "deserializeFromSource": true,
-                              "name": "Tree",
-                              "idSource": "Graph|2022-04-26T14:47:40.135Z|21425"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "ƒ.Node": {
-                        "name": "Tree",
-                        "active": true,
-                        "components": {
-                          "ComponentTransform": [
-                            {
-                              "ƒ.ComponentTransform": {
-                                "local": {
-                                  "translation": "[5, 0, -8]",
-                                  "rotation": "[2.1999998092651367, 0, 6]",
-                                  "scaling": "[1, 1.100000023841858, 1]"
-                                },
-                                "Component": {
-                                  "active": true
-                                }
-                              }
-                            }
-                          ],
-                          "InitGroundPositionScript": [
-                            {
-                              "Script.InitGroundPositionScript": {
-                                "active": true
-                              }
-                            }
-                          ]
-                        },
-                        "children": [
-                          {
-                            "ƒ.GraphInstance": {
-                              "deserializeFromSource": true,
-                              "name": "Tree",
-                              "idSource": "Graph|2022-04-26T14:47:40.135Z|21425"
+                            "ƒ.Node": {
+                              "name": "Crown",
+                              "active": true,
+                              "components": {
+                                "ComponentMesh": [
+                                  {
+                                    "ƒ.ComponentMesh": {
+                                      "idMesh": "MeshRotation|2022-04-26T14:20:41.981Z|90481",
+                                      "pivot": {
+                                        "translation": "[0, 5, 0]",
+                                        "rotation": "[0, 0, 0]",
+                                        "scaling": "[4, 6, 5]"
+                                      },
+                                      "Component": {
+                                        "active": true
+                                      }
+                                    }
+                                  }
+                                ],
+                                "ComponentMaterial": [
+                                  {
+                                    "ƒ.ComponentMaterial": {
+                                      "sortForAlpha": false,
+                                      "clrPrimary": "[1, 1, 1, 1]",
+                                      "clrSecondary": "[1, 1, 1, 1]",
+                                      "pivot": {
+                                        "translation": "[0, 0]",
+                                        "rotation": 0,
+                                        "scaling": "[1, 1]"
+                                      },
+                                      "Component": {
+                                        "active": true
+                                      },
+                                      "idMaterial": "Material|2022-04-26T14:27:50.254Z|89129"
+                                    }
+                                  }
+                                ]
+                              },
+                              "children": []
                             }
                           }
                         ]
@@ -791,130 +748,6 @@
         "name": "stem.jpg",
         "mipmap": "CRISP"
       }
-    }
-  },
-  "Graph|2022-04-26T14:47:40.135Z|21425": {
-    "ƒ.Graph": {
-      "name": "Tree",
-      "active": true,
-      "components": {
-        "ComponentTransform": [
-          {
-            "ƒ.ComponentTransform": {
-              "local": {
-                "translation": "[-1, 1, 0]",
-                "rotation": "[0, 0, 0]",
-                "scaling": "[1, 1, 1]"
-              },
-              "Component": {
-                "active": true
-              }
-            }
-          }
-        ]
-      },
-      "children": [
-        {
-          "ƒ.Node": {
-            "name": "Stem",
-            "active": true,
-            "components": {
-              "ComponentMesh": [
-                {
-                  "ƒ.ComponentMesh": {
-                    "idMesh": "MeshRotation|2022-04-26T14:29:28.452Z|66296",
-                    "pivot": {
-                      "translation": "[0, 2.59999942779541, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[0.5999999642372131, 2, 0.5999999046325684]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ],
-              "ComponentMaterial": [
-                {
-                  "ƒ.ComponentMaterial": {
-                    "sortForAlpha": false,
-                    "clrPrimary": "[1, 1, 1, 1]",
-                    "clrSecondary": "[1, 1, 1, 1]",
-                    "pivot": {
-                      "translation": "[0, 0]",
-                      "rotation": 0,
-                      "scaling": "[1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    },
-                    "idMaterial": "Material|2022-04-26T14:32:03.556Z|44275"
-                  }
-                }
-              ]
-            },
-            "children": []
-          }
-        },
-        {
-          "ƒ.Node": {
-            "name": "Crown",
-            "active": true,
-            "components": {
-              "ComponentMesh": [
-                {
-                  "ƒ.ComponentMesh": {
-                    "idMesh": "MeshRotation|2022-04-26T14:20:41.981Z|90481",
-                    "pivot": {
-                      "translation": "[0, 4.999999046325684, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[4, 6, 4]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ],
-              "ComponentMaterial": [
-                {
-                  "ƒ.ComponentMaterial": {
-                    "sortForAlpha": false,
-                    "clrPrimary": "[1, 1, 1, 1]",
-                    "clrSecondary": "[1, 1, 1, 1]",
-                    "pivot": {
-                      "translation": "[0, 0]",
-                      "rotation": 0,
-                      "scaling": "[1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    },
-                    "idMaterial": "Material|2022-04-26T14:27:50.254Z|89129"
-                  }
-                }
-              ],
-              "ComponentTransform": [
-                {
-                  "ƒ.ComponentTransform": {
-                    "local": {
-                      "translation": "[0, 0, 0]",
-                      "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
-                    },
-                    "Component": {
-                      "active": true
-                    }
-                  }
-                }
-              ]
-            },
-            "children": []
-          }
-        }
-      ],
-      "idResource": "Graph|2022-04-26T14:47:40.135Z|21425",
-      "type": "Graph"
     }
   },
   "Material|2022-04-28T12:39:01.094Z|08004": {
