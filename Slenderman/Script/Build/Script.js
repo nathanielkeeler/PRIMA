@@ -150,41 +150,37 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    class PlayerToGroundScript extends ƒ.ComponentScript {
+    class MovementOnGroundScript extends ƒ.ComponentScript {
+        static root;
+        static ground;
+        static cmpMeshTerrain;
+        static meshTerrain;
         // Register the script as component for use in the editor via drag&drop
-        static iSubclass = ƒ.Component.registerSubclass(PlayerToGroundScript);
+        static iSubclass = ƒ.Component.registerSubclass(MovementOnGroundScript);
         // Properties may be mutated by users in the editor via the automatically created user interface
-        message = "PlayerToGroundScript added to Player.";
         constructor() {
             super();
             // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
-            // Listen to this component being added to or removed from a node
-            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.addComponent);
         }
-        // Activate the functions of this component as response to events
-        hndEvent = (_event) => {
-            switch (_event.type) {
-                case "componentAdd" /* COMPONENT_ADD */:
-                    ƒ.Debug.log(this.message, this.node);
-                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.toGround);
-                    break;
-                case "componentRemove" /* COMPONENT_REMOVE */:
-                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                    break;
-                case "nodeDeserialized" /* NODE_DESERIALIZED */:
-                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
-                    break;
-            }
+        addComponent = () => {
+            this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.setPosition);
         };
-        toGround = (_event) => {
+        setPosition = () => {
+            if (!MovementOnGroundScript.root) {
+                MovementOnGroundScript.root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
+                MovementOnGroundScript.ground = MovementOnGroundScript.root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
+                MovementOnGroundScript.cmpMeshTerrain = MovementOnGroundScript.ground.getComponent(ƒ.ComponentMesh);
+                MovementOnGroundScript.meshTerrain = MovementOnGroundScript.cmpMeshTerrain.mesh;
+            }
+            const yDiff = MovementOnGroundScript.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, MovementOnGroundScript.cmpMeshTerrain.mtxWorld)?.distance;
+            if (yDiff)
+                this.node.mtxLocal.translateY(-yDiff);
         };
     }
-    Script.PlayerToGroundScript = PlayerToGroundScript;
+    Script.MovementOnGroundScript = MovementOnGroundScript;
 })(Script || (Script = {}));
 var Script;
 (function (Script) {

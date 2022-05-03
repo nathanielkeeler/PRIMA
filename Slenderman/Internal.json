@@ -155,8 +155,7 @@
                           "InitGroundPositionScript": [
                             {
                               "Script.InitGroundPositionScript": {
-                                "active": true,
-                                "message": "InitGroundPositionScript added to "
+                                "active": true
                               }
                             }
                           ]
@@ -194,8 +193,7 @@
                           "InitGroundPositionScript": [
                             {
                               "Script.InitGroundPositionScript": {
-                                "active": true,
-                                "message": "InitGroundPositionScript added to "
+                                "active": true
                               }
                             }
                           ]
@@ -233,8 +231,7 @@
                           "InitGroundPositionScript": [
                             {
                               "Script.InitGroundPositionScript": {
-                                "active": true,
-                                "message": "InitGroundPositionScript added to "
+                                "active": true
                               }
                             }
                           ]
@@ -272,8 +269,7 @@
                           "InitGroundPositionScript": [
                             {
                               "Script.InitGroundPositionScript": {
-                                "active": true,
-                                "message": "InitGroundPositionScript added to "
+                                "active": true
                               }
                             }
                           ]
@@ -509,7 +505,7 @@
                           },
                           "light": {
                             "ƒ.LightAmbient": {
-                              "color": "[0.4, 0.43137254901960786, 0.5764705882352941, 1]"
+                              "color": "[0.4627450980392157, 0.5098039215686274, 0.6784313725490196, 1]"
                             }
                           },
                           "Component": {
@@ -567,7 +563,6 @@
                 {
                   "Script.SlendermanMovementScript": {
                     "active": true,
-                    "message": "Slenderman moving...",
                     "timeToChange": 0,
                     "direction": {
                       "x": 0,
@@ -588,6 +583,14 @@
                     "Component": {
                       "active": true
                     }
+                  }
+                }
+              ],
+              "MovementOnGroundScript": [
+                {
+                  "Script.MovementOnGroundScript": {
+                    "active": true,
+                    "message": "MovementOnGroundScript added to Player."
                   }
                 }
               ]
@@ -611,6 +614,14 @@
                     "Component": {
                       "active": true
                     }
+                  }
+                }
+              ],
+              "MovementOnGroundScript": [
+                {
+                  "Script.MovementOnGroundScript": {
+                    "active": true,
+                    "message": "MovementOnGroundScript added to Player."
                   }
                 }
               ]
