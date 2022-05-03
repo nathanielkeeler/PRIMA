@@ -79,8 +79,7 @@ namespace Slenderman {
         ƒ.Project.resources["Graph|2022-05-03T11:32:23.947Z|52682"] as ƒ.Graph
       );
       let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
-      let heightY: number = randomInt(0.9, 1.3);
-      let treeHeight = new ƒ.Vector3(1, heightY, 1);
+      let treeHeight = new ƒ.Vector3(1, randomInt(0.9, 1.3), 1);
 
       treeInstance.mtxLocal.translateX(position.x);
       treeInstance.mtxLocal.translateZ(position.z);
