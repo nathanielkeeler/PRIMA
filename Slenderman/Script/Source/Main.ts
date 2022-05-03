@@ -24,7 +24,7 @@ namespace Slenderman {
     player = root.getChildrenByName("Player")[0];
     trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
     initPlayerView();
-    // await addTrees();
+    await addTrees();
 
     let canvas: HTMLCanvasElement = viewport.getCanvas();
     canvas.addEventListener("pointermove", hndPointerMove);
@@ -73,27 +73,27 @@ namespace Slenderman {
     viewport.camera = playerCmpCam; //Active viewport camera is player view
   }
 
-  // async function addTrees(): Promise<void> {
-  //   for (let i = 0; i < 20; i++) {
-  //     let treeInstance = await ƒ.Project.createGraphInstance(
-  //       ƒ.Project.resources["Graph|2022-05-03T11:14:36.695Z|55699"] as ƒ.Graph
-  //     );
-  //     let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
-  //     let heightY: number = randomInt(0.9, 1.3);
-  //     let treeHeight = new ƒ.Vector3(1, heightY, 1);
+  async function addTrees(): Promise<void> {
+    for (let i = 0; i < 20; i++) {
+      let treeInstance = await ƒ.Project.createGraphInstance(
+        ƒ.Project.resources["Graph|2022-05-03T11:14:36.695Z|55699"] as ƒ.Graph
+      );
+      let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
+      let heightY: number = randomInt(0.9, 1.3);
+      let treeHeight = new ƒ.Vector3(1, heightY, 1);
 
-  //     treeInstance.mtxLocal.translateX(position.x);
-  //     treeInstance.mtxLocal.translateZ(position.z);
-  //     treeInstance.mtxLocal.scale(treeHeight);
+      treeInstance.mtxLocal.translateX(position.x);
+      treeInstance.mtxLocal.translateZ(position.z);
+      treeInstance.mtxLocal.scale(treeHeight);
 
-  //     trees.addChild(treeInstance);
-  //   }
-  // }
+      trees.addChild(treeInstance);
+    }
+  }
 
-  // function randomInt(_min: number, _max: number): number {
-  //   let randomNumber: number = Math.random() * (_max - _min) + _min;
-  //   return randomNumber;
-  // }
+  function randomInt(_min: number, _max: number): number {
+    let randomNumber: number = Math.random() * (_max - _min) + _min;
+    return randomNumber;
+  }
 }
 
 

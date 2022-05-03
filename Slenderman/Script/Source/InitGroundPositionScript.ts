@@ -1,4 +1,4 @@
-namespace Slenderman {
+namespace Script {
   import ƒ = FudgeCore;
   ƒ.Project.registerScriptNamespace(Script);  // Register the namespace to FUDGE for serialization
 

@@ -36,8 +36,8 @@ var Script;
     }
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
-var Slenderman;
-(function (Slenderman) {
+var Script;
+(function (Script) {
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
     class InitGroundPositionScript extends ƒ.ComponentScript {
@@ -78,8 +78,8 @@ var Slenderman;
             this.node.mtxLocal.translateY(-yDiff);
         };
     }
-    Slenderman.InitGroundPositionScript = InitGroundPositionScript;
-})(Slenderman || (Slenderman = {}));
+    Script.InitGroundPositionScript = InitGroundPositionScript;
+})(Script || (Script = {}));
 var Slenderman;
 (function (Slenderman) {
     var ƒ = FudgeCore;
@@ -99,7 +99,7 @@ var Slenderman;
         player = root.getChildrenByName("Player")[0];
         trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
         initPlayerView();
-        // await addTrees();
+        await addTrees();
         let canvas = viewport.getCanvas();
         canvas.addEventListener("pointermove", hndPointerMove);
         canvas.requestPointerLock();
@@ -134,24 +134,22 @@ var Slenderman;
         playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
         viewport.camera = playerCmpCam; //Active viewport camera is player view
     }
-    // async function addTrees(): Promise<void> {
-    //   for (let i = 0; i < 20; i++) {
-    //     let treeInstance = await ƒ.Project.createGraphInstance(
-    //       ƒ.Project.resources["Graph|2022-05-03T11:14:36.695Z|55699"] as ƒ.Graph
-    //     );
-    //     let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
-    //     let heightY: number = randomInt(0.9, 1.3);
-    //     let treeHeight = new ƒ.Vector3(1, heightY, 1);
-    //     treeInstance.mtxLocal.translateX(position.x);
-    //     treeInstance.mtxLocal.translateZ(position.z);
-    //     treeInstance.mtxLocal.scale(treeHeight);
-    //     trees.addChild(treeInstance);
-    //   }
-    // }
-    // function randomInt(_min: number, _max: number): number {
-    //   let randomNumber: number = Math.random() * (_max - _min) + _min;
-    //   return randomNumber;
-    // }
+    async function addTrees() {
+        for (let i = 0; i < 20; i++) {
+            let treeInstance = await ƒ.Project.createGraphInstance(ƒ.Project.resources["Graph|2022-05-03T11:14:36.695Z|55699"]);
+            let position = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
+            let heightY = randomInt(0.9, 1.3);
+            let treeHeight = new ƒ.Vector3(1, heightY, 1);
+            treeInstance.mtxLocal.translateX(position.x);
+            treeInstance.mtxLocal.translateZ(position.z);
+            treeInstance.mtxLocal.scale(treeHeight);
+            trees.addChild(treeInstance);
+        }
+    }
+    function randomInt(_min, _max) {
+        let randomNumber = Math.random() * (_max - _min) + _min;
+        return randomNumber;
+    }
 })(Slenderman || (Slenderman = {}));
 var Script;
 (function (Script) {
