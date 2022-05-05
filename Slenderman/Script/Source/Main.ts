@@ -6,6 +6,7 @@ namespace Slenderman {
   let player: ƒ.Node;
   let playerCmpCam: ƒ.ComponentCamera;
   let trees: ƒ.Node;
+  let rocks: ƒ.Node;
 
   let speedRot: number = 0.1;
   let rotationX: number = 0;
@@ -23,8 +24,10 @@ namespace Slenderman {
     root = viewport.getBranch();
     player = root.getChildrenByName("Player")[0];
     trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
+    rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
     initPlayerView();
     await addTrees();
+    await addRocks();
 
     let canvas: HTMLCanvasElement = viewport.getCanvas();
     canvas.addEventListener("pointermove", hndPointerMove);
@@ -74,7 +77,7 @@ namespace Slenderman {
   }
 
   async function addTrees(): Promise<void> {
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 25; i++) {
       let treeInstance = await ƒ.Project.createGraphInstance(
         ƒ.Project.resources["Graph|2022-05-03T11:32:23.947Z|52682"] as ƒ.Graph
       );
@@ -84,8 +87,28 @@ namespace Slenderman {
       treeInstance.mtxLocal.translateX(position.x);
       treeInstance.mtxLocal.translateZ(position.z);
       treeInstance.mtxLocal.scale(treeHeight);
+      // treeInstance.addComponent(new InitGroundPositionScript);
 
       trees.addChild(treeInstance);
+    }
+  }
+
+  async function addRocks(): Promise<void> {
+    for (let i = 0; i < 10; i++) {
+      let rockInstance = await ƒ.Project.createGraphInstance(
+        ƒ.Project.resources["Graph|2022-05-03T14:11:09.844Z|88150"] as ƒ.Graph
+      );
+      let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
+      let rockScale = new ƒ.Vector3(randomInt(0.4, 1), randomInt(0.4, 1), randomInt(0.4, 1));
+      let rockRotation = new ƒ.Vector3(randomInt(0, 5), randomInt(1, 180), randomInt(0, 5));
+
+      rockInstance.mtxLocal.translateX(position.x);
+      rockInstance.mtxLocal.translateX(-0.2);
+      rockInstance.mtxLocal.translateZ(position.z);
+      rockInstance.mtxLocal.scale(rockScale);
+      rockInstance.mtxLocal.rotate(rockRotation);
+
+      rocks.addChild(rockInstance);
     }
   }
 

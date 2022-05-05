@@ -186,9 +186,9 @@
           {
             "ƒ.ComponentLight": {
               "pivot": {
-                "translation": "[0, 0, 0]",
+                "translation": "[0, 20, 0]",
                 "rotation": "[40, 0, 0]",
-                "scaling": "[1, 1, 1]"
+                "scaling": "[1, 1, 0]"
               },
               "light": {
                 "ƒ.LightDirectional": {
@@ -453,6 +453,22 @@
                     ]
                   },
                   "children": []
+                }
+              },
+              {
+                "ƒ.Node": {
+                  "name": "Rocks",
+                  "active": true,
+                  "components": {},
+                  "children": [
+                    {
+                      "ƒ.GraphInstance": {
+                        "deserializeFromSource": true,
+                        "name": "Rock",
+                        "idSource": "Graph|2022-05-03T14:11:09.844Z|88150"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -760,6 +776,115 @@
         }
       ],
       "idResource": "Graph|2022-05-03T11:32:23.947Z|52682",
+      "type": "Graph"
+    }
+  },
+  "MeshObj|2022-05-03T13:56:07.402Z|67604": {
+    "ƒ.MeshObj": {
+      "idResource": "MeshObj|2022-05-03T13:56:07.402Z|67604",
+      "name": "rock.obj",
+      "type": "MeshObj",
+      "url": "Assets\\rock\\rock.obj"
+    }
+  },
+  "TextureImage|2022-05-03T14:02:45.328Z|12459": {
+    "ƒ.TextureImage": {
+      "url": "Assets\\rock\\rock_tex.jpg",
+      "type": "TextureImage",
+      "Texture": {
+        "idResource": "TextureImage|2022-05-03T14:02:45.328Z|12459",
+        "name": "rock_tex.jpg",
+        "mipmap": "CRISP"
+      }
+    }
+  },
+  "Material|2022-05-03T14:03:13.922Z|96779": {
+    "ƒ.Material": {
+      "name": "ShaderStone",
+      "idResource": "Material|2022-05-03T14:03:13.922Z|96779",
+      "shader": "ShaderGouraudTextured",
+      "coat": {
+        "ƒ.CoatRemissiveTextured": {
+          "color": "[1, 1, 1, 1]",
+          "idTexture": "TextureImage|2022-05-03T14:02:45.328Z|12459",
+          "diffuse": 1,
+          "specular": 0
+        }
+      }
+    }
+  },
+  "Graph|2022-05-03T14:11:09.844Z|88150": {
+    "ƒ.Graph": {
+      "name": "Rock",
+      "active": true,
+      "components": {
+        "ComponentTransform": [
+          {
+            "ƒ.ComponentTransform": {
+              "local": {
+                "translation": "[0, 0, 0]",
+                "rotation": "[0, 0, 0]",
+                "scaling": "[1, 1, 1]"
+              },
+              "Component": {
+                "active": true
+              }
+            }
+          }
+        ],
+        "InitGroundPositionScript": [
+          {
+            "Script.InitGroundPositionScript": {
+              "active": true
+            }
+          }
+        ]
+      },
+      "children": [
+        {
+          "ƒ.Node": {
+            "name": "Rock",
+            "active": true,
+            "components": {
+              "ComponentMesh": [
+                {
+                  "ƒ.ComponentMesh": {
+                    "idMesh": "MeshObj|2022-05-03T13:56:07.402Z|67604",
+                    "pivot": {
+                      "translation": "[4, 0, 3]",
+                      "rotation": "[0, 0, 0]",
+                      "scaling": "[0.05000000447034836, 0.04999992996454239, 0.04999990016222]"
+                    },
+                    "Component": {
+                      "active": true
+                    }
+                  }
+                }
+              ],
+              "ComponentMaterial": [
+                {
+                  "ƒ.ComponentMaterial": {
+                    "sortForAlpha": false,
+                    "clrPrimary": "[1, 1, 1, 1]",
+                    "clrSecondary": "[1, 1, 1, 1]",
+                    "pivot": {
+                      "translation": "[0, 0]",
+                      "rotation": 0,
+                      "scaling": "[1, 1]"
+                    },
+                    "Component": {
+                      "active": true
+                    },
+                    "idMaterial": "Material|2022-05-03T14:03:13.922Z|96779"
+                  }
+                }
+              ]
+            },
+            "children": []
+          }
+        }
+      ],
+      "idResource": "Graph|2022-05-03T14:11:09.844Z|88150",
       "type": "Graph"
     }
   }
