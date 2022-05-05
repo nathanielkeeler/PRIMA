@@ -81,19 +81,17 @@ var Slenderman;
     let root;
     let player;
     let playerCmpCam;
+    let playerRigidBody;
     let trees;
     let rocks;
     let speedRot = 0.1;
     let rotationX = 0;
-    let ctrWalk = new ƒ.Control("ctrWalk", 1.5, 0 /* PROPORTIONAL */);
-    let ctrRun = new ƒ.Control("ctrRun", 3, 0 /* PROPORTIONAL */);
+    // let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL);
+    // let ctrRun: ƒ.Control = new ƒ.Control("ctrRun", 3, ƒ.CONTROL_TYPE.PROPORTIONAL);
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         viewport = _event.detail;
-        root = viewport.getBranch();
-        player = root.getChildrenByName("Player")[0];
-        trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
-        rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
+        initVariables();
         initPlayerView();
         await addTrees();
         await addRocks();
@@ -110,6 +108,14 @@ var Slenderman;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
+    function initVariables() {
+        root = viewport.getBranch();
+        player = root.getChildrenByName("Player")[0];
+        playerRigidBody = player.getComponent(ƒ.ComponentRigidbody);
+        playerRigidBody.effectRotation = new ƒ.Vector3(0, 0, 0);
+        trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
+        rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
+    }
     function hndPointerMove(_event) {
         player.mtxLocal.rotateY(-_event.movementX * speedRot);
         rotationX += _event.movementY * speedRot;
@@ -117,15 +123,23 @@ var Slenderman;
         playerCmpCam.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
     }
     function controlWalk() {
-        let inputForward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
-        ctrWalk.setInput(inputForward);
-        player.mtxLocal.translateZ(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
-        let inputSideways = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
-        ctrWalk.setInput(inputSideways);
-        player.mtxLocal.translateX(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
-        let inputRun = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.SHIFT_RIGHT]);
-        ctrRun.setInput(inputRun);
-        player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        // let inputForward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+        // ctrWalk.setInput(inputForward);
+        // player.mtxLocal.translateZ(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        // let inputSideways: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
+        // ctrWalk.setInput(inputSideways);
+        // player.mtxLocal.translateX(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        // let inputRun: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.SHIFT_RIGHT]);
+        // ctrRun.setInput(inputRun);
+        // player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
+            playerRigidBody.applyForce(new ƒ.Vector3(0, 0, 150));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+            playerRigidBody.applyForce(new ƒ.Vector3(0, 0, -150));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+            playerRigidBody.applyForce(new ƒ.Vector3(150, 0, 0));
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+            playerRigidBody.applyForce(new ƒ.Vector3(-150, 0, 0));
     }
     function initPlayerView() {
         playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);

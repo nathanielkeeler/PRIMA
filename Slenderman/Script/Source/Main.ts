@@ -5,14 +5,15 @@ namespace Slenderman {
   let root: ƒ.Node;
   let player: ƒ.Node;
   let playerCmpCam: ƒ.ComponentCamera;
+  let playerRigidBody: ƒ.ComponentRigidbody;
   let trees: ƒ.Node;
   let rocks: ƒ.Node;
 
   let speedRot: number = 0.1;
   let rotationX: number = 0;
 
-  let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL);
-  let ctrRun: ƒ.Control = new ƒ.Control("ctrRun", 3, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  // let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  // let ctrRun: ƒ.Control = new ƒ.Control("ctrRun", 3, ƒ.CONTROL_TYPE.PROPORTIONAL);
 
   document.addEventListener("interactiveViewportStarted", <any>start);
 
@@ -21,10 +22,7 @@ namespace Slenderman {
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
 
-    root = viewport.getBranch();
-    player = root.getChildrenByName("Player")[0];
-    trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
-    rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
+    initVariables();
     initPlayerView();
     await addTrees();
     await addRocks();
@@ -49,6 +47,15 @@ namespace Slenderman {
     ƒ.AudioManager.default.update();
   }
 
+  function initVariables(): void {
+    root = viewport.getBranch();
+    player = root.getChildrenByName("Player")[0];
+    playerRigidBody = player.getComponent(ƒ.ComponentRigidbody);
+    playerRigidBody.effectRotation = new ƒ.Vector3(0, 0 ,0);
+    trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
+    rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
+  }
+
 
   function hndPointerMove(_event: PointerEvent): void {
     player.mtxLocal.rotateY(-_event.movementX * speedRot);
@@ -58,17 +65,29 @@ namespace Slenderman {
   }
 
   function controlWalk(): void {
-    let inputForward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
-    ctrWalk.setInput(inputForward);
-    player.mtxLocal.translateZ(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    // let inputForward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+    // ctrWalk.setInput(inputForward);
+    // player.mtxLocal.translateZ(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
 
-    let inputSideways: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
-    ctrWalk.setInput(inputSideways);
-    player.mtxLocal.translateX(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    // let inputSideways: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
+    // ctrWalk.setInput(inputSideways);
+    // player.mtxLocal.translateX(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
 
-    let inputRun: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.SHIFT_RIGHT]);
-    ctrRun.setInput(inputRun);
-    player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    // let inputRun: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.SHIFT_RIGHT]);
+    // ctrRun.setInput(inputRun);
+    // player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+
+    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
+      playerRigidBody.applyForce(new ƒ.Vector3(0, 0, 150));
+
+    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
+      playerRigidBody.applyForce(new ƒ.Vector3(0, 0, -150));
+
+    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
+      playerRigidBody.applyForce(new ƒ.Vector3(150, 0, 0));
+
+    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
+      playerRigidBody.applyForce(new ƒ.Vector3(-150, 0, 0));
   }
 
   function initPlayerView(): void {
