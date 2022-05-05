@@ -1,21 +1,17 @@
 namespace Script {
   import ƒ = FudgeCore;
-  ƒ.Project.registerScriptNamespace(Script);  // Register the namespace to FUDGE for serialization
-
+  ƒ.Project.registerScriptNamespace(Script);
   export class MovementOnGroundScript extends ƒ.ComponentScript {
     private static root: ƒ.Graph;
     private static ground: ƒ.Node;
     private static cmpMeshTerrain: ƒ.ComponentMesh;
     private static meshTerrain: ƒ.MeshTerrain;
 
-    // Register the script as component for use in the editor via drag&drop
     public static readonly iSubclass: number = ƒ.Component.registerSubclass(MovementOnGroundScript);
-    // Properties may be mutated by users in the editor via the automatically created user interface
 
     constructor() {
       super();
 
-      // Don't start when running in editor
       if (ƒ.Project.mode == ƒ.MODE.EDITOR) return;
 
       this.addEventListener(ƒ.EVENT.COMPONENT_ADD, this.addComponent);
@@ -33,8 +29,7 @@ namespace Script {
         MovementOnGroundScript.meshTerrain = <ƒ.MeshTerrain>MovementOnGroundScript.cmpMeshTerrain.mesh;
       }
 
-      const yDiff: number = MovementOnGroundScript.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, MovementOnGroundScript.cmpMeshTerrain.mtxWorld)?.distance;
-
+      let yDiff: number = MovementOnGroundScript.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, MovementOnGroundScript.cmpMeshTerrain.mtxWorld)?.distance;
       if (yDiff)
         this.node.mtxLocal.translateY(-yDiff);
     };

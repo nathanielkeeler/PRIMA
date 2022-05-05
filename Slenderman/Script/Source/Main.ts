@@ -41,7 +41,7 @@ namespace Slenderman {
 
 
   function update(_event: Event): void {
-    // ƒ.Physics.simulate();  // if physics is included and used
+    ƒ.Physics.simulate();
 
     controlWalk();
 
@@ -103,7 +103,6 @@ namespace Slenderman {
       let rockRotation = new ƒ.Vector3(randomInt(0, 5), randomInt(1, 180), randomInt(0, 5));
 
       rockInstance.mtxLocal.translateX(position.x);
-      rockInstance.mtxLocal.translateX(-0.2);
       rockInstance.mtxLocal.translateZ(position.z);
       rockInstance.mtxLocal.scale(rockScale);
       rockInstance.mtxLocal.rotate(rockRotation);

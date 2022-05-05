@@ -39,22 +39,17 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    ƒ.Project.registerScriptNamespace(Script);
     class InitGroundPositionScript extends ƒ.ComponentScript {
-        // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(InitGroundPositionScript);
-        // Properties may be mutated by users in the editor via the automatically created user interface
         constructor() {
             super();
-            // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
-            // Listen to this component being added to or removed from a node
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
             this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
             this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
         }
-        // Activate the functions of this component as response to events
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
@@ -65,16 +60,15 @@ var Script;
                     this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
                     break;
                 case "nodeDeserialized" /* NODE_DESERIALIZED */:
-                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
                     break;
             }
         };
         initPositionToGround = (_event) => {
-            const root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
-            const ground = root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
-            const cmpMeshGround = ground.getComponent(ƒ.ComponentMesh);
-            const meshGround = ground.getComponent(ƒ.ComponentMesh).mesh;
-            const yDiff = meshGround.getTerrainInfo(this.node.mtxLocal.translation, cmpMeshGround.mtxWorld).distance;
+            let root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
+            let ground = root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
+            let cmpMeshGround = ground.getComponent(ƒ.ComponentMesh);
+            let meshGround = ground.getComponent(ƒ.ComponentMesh).mesh;
+            let yDiff = meshGround.getTerrainInfo(this.node.mtxLocal.translation, cmpMeshGround.mtxWorld).distance;
             this.node.mtxLocal.translateY(-yDiff);
         };
     }
@@ -111,7 +105,7 @@ var Slenderman;
         ƒ.Loop.start();
     }
     function update(_event) {
-        // ƒ.Physics.simulate();  // if physics is included and used
+        ƒ.Physics.simulate();
         controlWalk();
         viewport.draw();
         ƒ.AudioManager.default.update();
@@ -156,7 +150,6 @@ var Slenderman;
             let rockScale = new ƒ.Vector3(randomInt(0.4, 1), randomInt(0.4, 1), randomInt(0.4, 1));
             let rockRotation = new ƒ.Vector3(randomInt(0, 5), randomInt(1, 180), randomInt(0, 5));
             rockInstance.mtxLocal.translateX(position.x);
-            rockInstance.mtxLocal.translateX(-0.2);
             rockInstance.mtxLocal.translateZ(position.z);
             rockInstance.mtxLocal.scale(rockScale);
             rockInstance.mtxLocal.rotate(rockRotation);
@@ -171,18 +164,15 @@ var Slenderman;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    ƒ.Project.registerScriptNamespace(Script);
     class MovementOnGroundScript extends ƒ.ComponentScript {
         static root;
         static ground;
         static cmpMeshTerrain;
         static meshTerrain;
-        // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(MovementOnGroundScript);
-        // Properties may be mutated by users in the editor via the automatically created user interface
         constructor() {
             super();
-            // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.addComponent);
@@ -197,7 +187,7 @@ var Script;
                 MovementOnGroundScript.cmpMeshTerrain = MovementOnGroundScript.ground.getComponent(ƒ.ComponentMesh);
                 MovementOnGroundScript.meshTerrain = MovementOnGroundScript.cmpMeshTerrain.mesh;
             }
-            const yDiff = MovementOnGroundScript.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, MovementOnGroundScript.cmpMeshTerrain.mtxWorld)?.distance;
+            let yDiff = MovementOnGroundScript.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, MovementOnGroundScript.cmpMeshTerrain.mtxWorld)?.distance;
             if (yDiff)
                 this.node.mtxLocal.translateY(-yDiff);
         };
@@ -207,24 +197,19 @@ var Script;
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    ƒ.Project.registerScriptNamespace(Script);
     class SlendermanMovementScript extends ƒ.ComponentScript {
-        // Register the script as component for use in the editor via drag&drop
         static iSubclass = ƒ.Component.registerSubclass(SlendermanMovementScript);
-        // Properties may be mutated by users in the editor via the automatically created user interface
         timeToChange = 0;
         direction = ƒ.Vector3.ZERO();
         constructor() {
             super();
-            // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
-            // Listen to this component being added to or removed from a node
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
             this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
             this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
         }
-        // Activate the functions of this component as response to events
         hndEvent = (_event) => {
             switch (_event.type) {
                 case "componentAdd" /* COMPONENT_ADD */:
@@ -235,7 +220,6 @@ var Script;
                     this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
                     break;
                 case "nodeDeserialized" /* NODE_DESERIALIZED */:
-                    // if deserialized the node is now fully reconstructed and access to all its components and children is possible
                     break;
             }
         };
