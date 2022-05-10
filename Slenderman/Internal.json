@@ -886,7 +886,7 @@
           {
             "ƒ.ComponentTransform": {
               "local": {
-                "translation": "[0, -0.20000000298023224, 0]",
+                "translation": "[0, 0, 0]",
                 "rotation": "[0, 0, 0]",
                 "scaling": "[1, 1, 1]"
               },
@@ -915,7 +915,7 @@
                   "ƒ.ComponentMesh": {
                     "idMesh": "MeshObj|2022-05-03T13:56:07.402Z|67604",
                     "pivot": {
-                      "translation": "[4, 0, 3]",
+                      "translation": "[0, -0.1, 0]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[0.05000000447034836, 0.04999992996454239, 0.04999990016222]"
                     },

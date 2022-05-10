@@ -79,28 +79,37 @@ namespace Slenderman {
   }
 
   async function addTrees(): Promise<void> {
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < 45; i++) {
       let treeInstance = await ƒ.Project.createGraphInstance(
         ƒ.Project.resources["Graph|2022-05-03T11:32:23.947Z|52682"] as ƒ.Graph
       );
-      let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
+      
+      let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-30, 30), 0, randomInt(-28, 28));
       let treeHeight = new ƒ.Vector3(1, randomInt(0.9, 1.3), 1);
 
       treeInstance.mtxLocal.translateX(position.x);
       treeInstance.mtxLocal.translateZ(position.z);
       treeInstance.mtxLocal.scale(treeHeight);
-      // treeInstance.addComponent(new InitGroundPositionScript);
+
+      let rigidBody = new ƒ.ComponentRigidbody();
+      rigidBody.initialization = ƒ.BODY_INIT.TO_NODE;
+      rigidBody.friction = 1;
+      rigidBody.typeBody = ƒ.BODY_TYPE.STATIC;
+      rigidBody.typeCollider = ƒ.COLLIDER_TYPE.CYLINDER;
+      treeInstance.addComponent(rigidBody);
+
+      treeInstance.addComponent(new Script.InitGroundPositionScript);
 
       trees.addChild(treeInstance);
     }
   }
 
   async function addRocks(): Promise<void> {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
       let rockInstance = await ƒ.Project.createGraphInstance(
         ƒ.Project.resources["Graph|2022-05-03T14:11:09.844Z|88150"] as ƒ.Graph
       );
-      let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-28, 28), 0, randomInt(-28, 28));
+      let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-30, 30), 0, randomInt(-28, 28));
       let rockScale = new ƒ.Vector3(randomInt(0.4, 1), randomInt(0.4, 1), randomInt(0.4, 1));
       let rockRotation = new ƒ.Vector3(randomInt(0, 5), randomInt(1, 180), randomInt(0, 5));
 
@@ -108,6 +117,15 @@ namespace Slenderman {
       rockInstance.mtxLocal.translateZ(position.z);
       rockInstance.mtxLocal.scale(rockScale);
       rockInstance.mtxLocal.rotate(rockRotation);
+
+      let rigidBody = new ƒ.ComponentRigidbody();
+      rigidBody.initialization = ƒ.BODY_INIT.TO_NODE;
+      rigidBody.friction = 1;
+      rigidBody.typeBody = ƒ.BODY_TYPE.STATIC;
+      rigidBody.typeCollider = ƒ.COLLIDER_TYPE.CUBE;
+      rockInstance.addComponent(rigidBody);
+
+      rockInstance.addComponent(new Script.InitGroundPositionScript);
 
       rocks.addChild(rockInstance);
     }

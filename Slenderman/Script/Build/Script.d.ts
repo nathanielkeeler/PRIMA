@@ -12,8 +12,8 @@ declare namespace Script {
     class InitGroundPositionScript extends ƒ.ComponentScript {
         static readonly iSubclass: number;
         constructor();
-        addComponent: () => void;
-        private initPositionToGround;
+        private addComponent;
+        private setPosition;
     }
 }
 declare namespace Slenderman {
