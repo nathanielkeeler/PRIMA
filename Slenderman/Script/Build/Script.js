@@ -87,7 +87,6 @@ var Slenderman;
     let speedRot = 0.1;
     let rotationX = 0;
     let ctrWalk = new ƒ.Control("ctrWalk", 1.5, 0 /* PROPORTIONAL */, 250);
-    let ctrRun = new ƒ.Control("ctrRun", 3, 0 /* PROPORTIONAL */, 250);
     document.addEventListener("interactiveViewportStarted", start);
     async function start(_event) {
         viewport = _event.detail;
@@ -125,7 +124,6 @@ var Slenderman;
     function controlWalk() {
         let inputForward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
         let inputSideways = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
-        // let inputRun: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.SHIFT_RIGHT]);
         ctrWalk.setInput(inputForward);
         ctrWalk.setFactor(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT]) ? 5 : 2);
         let vecSideways = new ƒ.Vector3((1.5 * inputSideways * ƒ.Loop.timeFrameGame) / 20, 0, (ctrWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20);
@@ -171,10 +169,11 @@ var Script;
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script);
     class MovementOnGroundScript extends ƒ.ComponentScript {
-        static root;
-        static ground;
-        static cmpMeshTerrain;
-        static meshTerrain;
+        root;
+        ground;
+        cmpMeshTerrain;
+        meshTerrain;
+        rigidBody;
         static iSubclass = ƒ.Component.registerSubclass(MovementOnGroundScript);
         constructor() {
             super();
@@ -183,18 +182,18 @@ var Script;
             this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.addComponent);
         }
         addComponent = () => {
-            this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.setPosition);
+            this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.setVerticalPos);
         };
-        setPosition = () => {
-            if (!MovementOnGroundScript.root) {
-                MovementOnGroundScript.root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
-                MovementOnGroundScript.ground = MovementOnGroundScript.root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
-                MovementOnGroundScript.cmpMeshTerrain = MovementOnGroundScript.ground.getComponent(ƒ.ComponentMesh);
-                MovementOnGroundScript.meshTerrain = MovementOnGroundScript.cmpMeshTerrain.mesh;
+        setVerticalPos = () => {
+            this.root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
+            this.ground = this.root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
+            this.cmpMeshTerrain = this.ground.getComponent(ƒ.ComponentMesh);
+            this.meshTerrain = this.cmpMeshTerrain.mesh;
+            this.rigidBody = this.node.getComponent(ƒ.ComponentRigidbody);
+            let yDiff = this.meshTerrain.getTerrainInfo(this.rigidBody.getPosition(), this.cmpMeshTerrain.mtxWorld)?.distance;
+            if (yDiff) {
+                this.node.getComponent(ƒ.ComponentRigidbody).translateBody(new ƒ.Vector3(0, -yDiff, 0));
             }
-            let yDiff = MovementOnGroundScript.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, MovementOnGroundScript.cmpMeshTerrain.mtxWorld)?.distance;
-            if (yDiff)
-                this.node.mtxLocal.translateY(-yDiff);
         };
     }
     Script.MovementOnGroundScript = MovementOnGroundScript;

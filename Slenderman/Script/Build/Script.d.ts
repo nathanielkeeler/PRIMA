@@ -21,14 +21,15 @@ declare namespace Slenderman {
 declare namespace Script {
     import ƒ = FudgeCore;
     class MovementOnGroundScript extends ƒ.ComponentScript {
-        private static root;
-        private static ground;
-        private static cmpMeshTerrain;
-        private static meshTerrain;
+        private root;
+        private ground;
+        private cmpMeshTerrain;
+        private meshTerrain;
+        private rigidBody;
         static readonly iSubclass: number;
         constructor();
         addComponent: () => void;
-        setPosition: () => void;
+        private setVerticalPos;
     }
 }
 declare namespace Script {

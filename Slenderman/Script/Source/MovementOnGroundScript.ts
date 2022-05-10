@@ -2,10 +2,11 @@ namespace Script {
   import ƒ = FudgeCore;
   ƒ.Project.registerScriptNamespace(Script);
   export class MovementOnGroundScript extends ƒ.ComponentScript {
-    private static root: ƒ.Graph;
-    private static ground: ƒ.Node;
-    private static cmpMeshTerrain: ƒ.ComponentMesh;
-    private static meshTerrain: ƒ.MeshTerrain;
+    private root: ƒ.Graph;
+    private ground: ƒ.Node;
+    private cmpMeshTerrain: ƒ.ComponentMesh;
+    private meshTerrain: ƒ.MeshTerrain;
+    private rigidBody: ƒ.ComponentRigidbody;
 
     public static readonly iSubclass: number = ƒ.Component.registerSubclass(MovementOnGroundScript);
 
@@ -18,20 +19,20 @@ namespace Script {
     }
 
     public addComponent = (): void => {
-      this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.setPosition);
+      this.node.addEventListener(ƒ.EVENT.RENDER_PREPARE, this.setVerticalPos);
     };
 
-    public setPosition = (): void => {
-      if (!MovementOnGroundScript.root) {
-        MovementOnGroundScript.root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"] as ƒ.Graph;
-        MovementOnGroundScript.ground = MovementOnGroundScript.root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
-        MovementOnGroundScript.cmpMeshTerrain = MovementOnGroundScript.ground.getComponent(ƒ.ComponentMesh);
-        MovementOnGroundScript.meshTerrain = <ƒ.MeshTerrain>MovementOnGroundScript.cmpMeshTerrain.mesh;
-      }
+    private setVerticalPos = (): void => {
+      this.root = <ƒ.Graph>ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
+      this.ground = this.root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
+      this.cmpMeshTerrain = this.ground.getComponent(ƒ.ComponentMesh);
+      this.meshTerrain = <ƒ.MeshTerrain>this.cmpMeshTerrain.mesh;
+      this.rigidBody = this.node.getComponent(ƒ.ComponentRigidbody);
 
-      let yDiff: number = MovementOnGroundScript.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, MovementOnGroundScript.cmpMeshTerrain.mtxWorld)?.distance;
-      if (yDiff)
-        this.node.mtxLocal.translateY(-yDiff);
+      let yDiff = this.meshTerrain.getTerrainInfo(this.rigidBody.getPosition(), this.cmpMeshTerrain.mtxWorld)?.distance;
+      if (yDiff) {
+        this.node.getComponent(ƒ.ComponentRigidbody).translateBody(new ƒ.Vector3(0, -yDiff, 0));
+      }
     };
   }
 }
