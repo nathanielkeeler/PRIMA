@@ -12,7 +12,7 @@ declare namespace Script {
     class InitGroundPositionScript extends ƒ.ComponentScript {
         static readonly iSubclass: number;
         constructor();
-        hndEvent: (_event: Event) => void;
+        addComponent: () => void;
         private initPositionToGround;
     }
 }
@@ -39,7 +39,7 @@ declare namespace Script {
         private timeToChange;
         private direction;
         constructor();
-        hndEvent: (_event: Event) => void;
-        private move;
+        addComponent: () => void;
+        move: () => void;
     }
 }

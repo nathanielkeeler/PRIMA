@@ -10,24 +10,12 @@ namespace Script {
       if (ƒ.Project.mode == ƒ.MODE.EDITOR)
         return;
 
-      this.addEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
-      this.addEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
-      this.addEventListener(ƒ.EVENT.NODE_DESERIALIZED, this.hndEvent);
+      this.addEventListener(ƒ.EVENT.COMPONENT_ADD, this.addComponent);
     }
 
-    public hndEvent = (_event: Event): void => {
-      switch (_event.type) {
-        case ƒ.EVENT.COMPONENT_ADD:
-          document.addEventListener("interactiveViewportStarted", <EventListener>this.initPositionToGround);
-          break;
-        case ƒ.EVENT.COMPONENT_REMOVE:
-          this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
-          this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
-          break;
-        case ƒ.EVENT.NODE_DESERIALIZED:
-          break;
-      }
-    }
+    public addComponent = (): void => {
+      document.addEventListener("interactiveViewportStarted", <EventListener>this.initPositionToGround);
+    };
 
     private initPositionToGround = (_event: Event): void => {
       let root: ƒ.Graph = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"] as ƒ.Graph;

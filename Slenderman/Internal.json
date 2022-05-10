@@ -397,7 +397,7 @@
                           "pivot": {
                             "translation": "[0, 0, 0]",
                             "rotation": "[0, 0, 0]",
-                            "scaling": "[60, 1.5000001192092896, 60]"
+                            "scaling": "[60, 2.5, 60]"
                           },
                           "Component": {
                             "active": true
@@ -454,7 +454,7 @@
                           "pivot": {
                             "translation": "[0, 0, 0]",
                             "rotation": "[0, 0, 0]",
-                            "scaling": "[60, 1.5000001192092896, 60]"
+                            "scaling": "[60, 2.5, 60]"
                           },
                           "Component": {
                             "active": true
@@ -598,20 +598,13 @@
                 {
                   "ƒ.ComponentTransform": {
                     "local": {
-                      "translation": "[0, 2, -1]",
+                      "translation": "[-1, 5.700000286102295, -1]",
                       "rotation": "[0, 0, 0]",
-                      "scaling": "[1, 1, 1]"
+                      "scaling": "[1, 1.000000238418579, 1]"
                     },
                     "Component": {
                       "active": true
                     }
-                  }
-                }
-              ],
-              "MovementOnGroundScript": [
-                {
-                  "Script.MovementOnGroundScript": {
-                    "active": true
                   }
                 }
               ],
@@ -639,6 +632,13 @@
                     }
                   }
                 }
+              ],
+              "MovementOnGroundScript": [
+                {
+                  "Script.MovementOnGroundScript": {
+                    "active": true
+                  }
+                }
               ]
             },
             "children": [
@@ -658,7 +658,7 @@
                           },
                           "backgroundEnabled": true,
                           "projection": "central",
-                          "fieldOfView": 45,
+                          "fieldOfView": 50,
                           "direction": 2,
                           "aspect": 1,
                           "pivot": {

@@ -46,22 +46,10 @@ var Script;
             super();
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
-            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.addComponent);
         }
-        hndEvent = (_event) => {
-            switch (_event.type) {
-                case "componentAdd" /* COMPONENT_ADD */:
-                    document.addEventListener("interactiveViewportStarted", this.initPositionToGround);
-                    break;
-                case "componentRemove" /* COMPONENT_REMOVE */:
-                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                    break;
-                case "nodeDeserialized" /* NODE_DESERIALIZED */:
-                    break;
-            }
+        addComponent = () => {
+            document.addEventListener("interactiveViewportStarted", this.initPositionToGround);
         };
         initPositionToGround = (_event) => {
             let root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
@@ -185,14 +173,28 @@ var Script;
             this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.setVerticalPos);
         };
         setVerticalPos = () => {
-            this.root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
-            this.ground = this.root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
-            this.cmpMeshTerrain = this.ground.getComponent(ƒ.ComponentMesh);
-            this.meshTerrain = this.cmpMeshTerrain.mesh;
-            this.rigidBody = this.node.getComponent(ƒ.ComponentRigidbody);
-            let yDiff = this.meshTerrain.getTerrainInfo(this.rigidBody.getPosition(), this.cmpMeshTerrain.mtxWorld)?.distance;
-            if (yDiff) {
-                this.node.getComponent(ƒ.ComponentRigidbody).translateBody(new ƒ.Vector3(0, -yDiff, 0));
+            if (!this.root) {
+                this.root = ƒ.Project.resources["Graph|2022-04-12T15:10:16.404Z|44825"];
+                this.ground = this.root.getChildrenByName("Environment")[0].getChildrenByName("Ground")[0];
+                this.cmpMeshTerrain = this.ground.getComponent(ƒ.ComponentMesh);
+                this.meshTerrain = this.cmpMeshTerrain.mesh;
+            }
+            if (!this.rigidBody)
+                this.rigidBody = this.node.getComponent(ƒ.ComponentRigidbody);
+            let distance = 0;
+            if (this.rigidBody) {
+                distance = this.meshTerrain.getTerrainInfo(this.rigidBody.getPosition(), this.cmpMeshTerrain.mtxWorld)?.distance;
+            }
+            else {
+                distance = this.meshTerrain.getTerrainInfo(this.node.mtxLocal.translation, this.cmpMeshTerrain.mtxWorld)?.distance;
+            }
+            if (distance) {
+                if (this.rigidBody) {
+                    this.rigidBody.translateBody(new ƒ.Vector3(0, -distance, 0));
+                }
+                else {
+                    this.node.mtxLocal.translateY(-distance);
+                }
             }
         };
     }
@@ -205,33 +207,23 @@ var Script;
     class SlendermanMovementScript extends ƒ.ComponentScript {
         static iSubclass = ƒ.Component.registerSubclass(SlendermanMovementScript);
         timeToChange = 0;
-        direction = ƒ.Vector3.ZERO();
+        direction = new ƒ.Vector3();
         constructor() {
             super();
+            // Don't start when running in editor
             if (ƒ.Project.mode == ƒ.MODE.EDITOR)
                 return;
-            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.addComponent);
         }
-        hndEvent = (_event) => {
-            switch (_event.type) {
-                case "componentAdd" /* COMPONENT_ADD */:
-                    this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.move);
-                    break;
-                case "componentRemove" /* COMPONENT_REMOVE */:
-                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                    break;
-                case "nodeDeserialized" /* NODE_DESERIALIZED */:
-                    break;
-            }
+        addComponent = () => {
+            this.node.addEventListener("renderPrepare" /* RENDER_PREPARE */, this.move);
         };
-        move = (_event) => {
+        move = () => {
             this.node.mtxLocal.translate(ƒ.Vector3.SCALE(this.direction, ƒ.Loop.timeFrameGame / 1000));
-            if (this.timeToChange > ƒ.Time.game.get())
+            if (this.timeToChange > ƒ.Time.game.get()) {
                 return;
-            this.timeToChange = ƒ.Time.game.get() + 3000;
+            }
+            this.timeToChange = ƒ.Time.game.get() + 1000;
             this.direction = ƒ.Random.default.getVector3(new ƒ.Vector3(-1, 0, -1), new ƒ.Vector3(1, 0, 1));
         };
     }
