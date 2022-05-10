@@ -117,7 +117,7 @@ var Slenderman;
         rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
     }
     function hndPointerMove(_event) {
-        player.mtxLocal.rotateY(-_event.movementX * speedRot);
+        playerRigidBody.rotateBody(ƒ.Vector3.Y(-_event.movementX * speedRot));
         rotationX += _event.movementY * speedRot;
         rotationX = Math.min(60, Math.max(-60, rotationX));
         playerCmpCam.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
