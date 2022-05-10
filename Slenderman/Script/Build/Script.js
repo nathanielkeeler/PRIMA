@@ -36,6 +36,29 @@ var Script;
     }
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
+var Slenderman;
+(function (Slenderman) {
+    var ƒ = FudgeCore;
+    var ƒui = FudgeUserInterface;
+    class GameState extends ƒ.Mutable {
+        static controller;
+        static instance;
+        name = "LaserLeague";
+        health = 1;
+        constructor() {
+            super();
+            let domHud = document.querySelector("#Hud");
+            GameState.instance = this;
+            GameState.controller = new ƒui.Controller(this, domHud);
+            console.log("Hud-Controller", GameState.controller);
+        }
+        static get() {
+            return GameState.instance || new GameState();
+        }
+        reduceMutator(_mutator) { }
+    }
+    Slenderman.GameState = GameState;
+})(Slenderman || (Slenderman = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
@@ -81,6 +104,7 @@ var Slenderman;
     let playerRigidBody;
     let trees;
     let rocks;
+    let battery;
     let speedRot = 0.1;
     let rotationX = 0;
     let ctrWalk = new ƒ.Control("ctrWalk", 1.5, 0 /* PROPORTIONAL */, 250);
@@ -103,6 +127,8 @@ var Slenderman;
         controlWalk();
         viewport.draw();
         ƒ.AudioManager.default.update();
+        battery -= 0.001;
+        document.querySelector("div#vui>input").value = battery.toFixed(3);
     }
     function initVariables() {
         root = viewport.getBranch();
@@ -132,7 +158,7 @@ var Slenderman;
         viewport.camera = playerCmpCam; //Active viewport camera is player view
     }
     async function addTrees() {
-        for (let i = 0; i < 45; i++) {
+        for (let i = 0; i < 50; i++) {
             let treeInstance = await ƒ.Project.createGraphInstance(ƒ.Project.resources["Graph|2022-05-03T11:32:23.947Z|52682"]);
             let position = new ƒ.Vector3(randomInt(-30, 30), 0, randomInt(-28, 28));
             let treeHeight = new ƒ.Vector3(1, randomInt(0.9, 1.3), 1);
@@ -250,5 +276,96 @@ var Script;
         };
     }
     Script.SlendermanMovementScript = SlendermanMovementScript;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
+    var ƒAid = FudgeAid;
+    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+    let JOB;
+    (function (JOB) {
+        JOB[JOB["FOLLOW"] = 0] = "FOLLOW";
+        JOB[JOB["STAND"] = 1] = "STAND";
+        JOB[JOB["TELEPORT"] = 2] = "TELEPORT";
+    })(JOB || (JOB = {}));
+    class StateMachine extends ƒAid.ComponentStateMachine {
+        static iSubclass = ƒ.Component.registerSubclass(StateMachine);
+        static instructions = StateMachine.get();
+        cmpBody;
+        time = 0;
+        movement = new ƒ.Vector3();
+        constructor() {
+            super();
+            this.instructions = StateMachine.instructions; // setup instructions with the static set
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
+        }
+        static get() {
+            let setup = new ƒAid.StateMachineInstructions();
+            setup.transitDefault = StateMachine.transitDefault;
+            setup.setAction(JOB.FOLLOW, this.actFollow);
+            setup.setAction(JOB.STAND, this.actStand);
+            setup.setAction(JOB.TELEPORT, this.actTeleport);
+            return setup;
+        }
+        static transitDefault(_machine) {
+            console.log("Transit to", _machine.stateNext);
+        }
+        static async actFollow(_machine) {
+            if (avatar) {
+                _machine.node.mtxLocal.translate(ƒ.Vector3.SCALE(_machine.movement, ƒ.Loop.timeFrameGame / 1000));
+                if (_machine.time > ƒ.Time.game.get()) {
+                    return;
+                }
+                _machine.time = ƒ.Time.game.get() + 1000;
+                const vector = avatar.mtxLocal.translation.clone;
+                vector.subtract(_machine.node.mtxLocal.translation);
+                vector.normalize();
+                _machine.movement = vector;
+            }
+        }
+        static async actStand(_machine) {
+            console.log("stand");
+        }
+        static async actTeleport(_machine) {
+            _machine.node.mtxLocal.translation = ƒ.Random.default.getVector3(new ƒ.Vector3(29, 0, 29), new ƒ.Vector3(-29, 0, -29));
+            _machine.transit(JOB.FOLLOW);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                    this.transit(JOB.FOLLOW);
+                    break;
+                case "componentRemove" /* COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    ƒ.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                    break;
+                case "nodeDeserialized" /* NODE_DESERIALIZED */:
+                    this.cmpBody = this.node.getComponent(ƒ.ComponentRigidbody);
+                    this.cmpBody.addEventListener("TriggerEnteredCollision" /* TRIGGER_ENTER */, (_event) => {
+                        if (_event.cmpRigidbody.node.name == "Avatar")
+                            this.transit(JOB.STAND);
+                    });
+                    new ƒ.Timer(ƒ.Time.game, 25000, 0, () => {
+                        if (this.stateCurrent != JOB.STAND) {
+                            this.transit(JOB.TELEPORT);
+                        }
+                    });
+                    break;
+            }
+        };
+        update = (_event) => {
+            this.act();
+        };
+    }
+    Script.StateMachine = StateMachine;
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map

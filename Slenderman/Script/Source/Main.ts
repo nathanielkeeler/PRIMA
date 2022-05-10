@@ -9,6 +9,8 @@ namespace Slenderman {
   let trees: ƒ.Node;
   let rocks: ƒ.Node;
 
+  let battery: any;
+
   let speedRot: number = 0.1;
   let rotationX: number = 0;
   let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL, 250);
@@ -43,6 +45,9 @@ namespace Slenderman {
 
     viewport.draw();
     ƒ.AudioManager.default.update();
+
+    battery -= 0.001;
+    (<HTMLInputElement>document.querySelector("div#vui>input")).value = battery.toFixed(3);
   }
 
   function initVariables(): void {
@@ -79,11 +84,11 @@ namespace Slenderman {
   }
 
   async function addTrees(): Promise<void> {
-    for (let i = 0; i < 45; i++) {
+    for (let i = 0; i < 50; i++) {
       let treeInstance = await ƒ.Project.createGraphInstance(
         ƒ.Project.resources["Graph|2022-05-03T11:32:23.947Z|52682"] as ƒ.Graph
       );
-      
+
       let position: ƒ.Vector3 = new ƒ.Vector3(randomInt(-30, 30), 0, randomInt(-28, 28));
       let treeHeight = new ƒ.Vector3(1, randomInt(0.9, 1.3), 1);
 
