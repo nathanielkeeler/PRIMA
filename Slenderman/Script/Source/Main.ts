@@ -9,7 +9,7 @@ namespace Slenderman {
   let trees: ƒ.Node;
   let rocks: ƒ.Node;
 
-  let battery: any;
+  let gameState: GameState;
 
   let speedRot: number = 0.1;
   let rotationX: number = 0;
@@ -27,6 +27,8 @@ namespace Slenderman {
     await addTrees();
     await addRocks();
 
+    gameState = new GameState();
+
     let canvas: HTMLCanvasElement = viewport.getCanvas();
     canvas.addEventListener("pointermove", hndPointerMove);
     canvas.requestPointerLock();
@@ -42,12 +44,10 @@ namespace Slenderman {
     ƒ.Physics.simulate();
 
     controlWalk();
+    gameState.battery -= 0.001;
 
     viewport.draw();
     ƒ.AudioManager.default.update();
-
-    battery -= 0.001;
-    (<HTMLInputElement>document.querySelector("div#vui>input")).value = battery.toFixed(3);
   }
 
   function initVariables(): void {

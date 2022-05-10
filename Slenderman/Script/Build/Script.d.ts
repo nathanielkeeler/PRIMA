@@ -10,11 +10,9 @@ declare namespace Script {
 declare namespace Slenderman {
     import ƒ = FudgeCore;
     class GameState extends ƒ.Mutable {
-        private static controller;
         private static instance;
-        name: string;
-        health: number;
-        private constructor();
+        battery: number;
+        constructor();
         static get(): GameState;
         protected reduceMutator(_mutator: ƒ.Mutator): void;
     }
@@ -54,28 +52,4 @@ declare namespace Script {
         addComponent: () => void;
         move: () => void;
     }
-}
-declare namespace Script {
-    import ƒAid = FudgeAid;
-    enum JOB {
-        FOLLOW = 0,
-        STAND = 1,
-        TELEPORT = 2
-    }
-    export class StateMachine extends ƒAid.ComponentStateMachine<JOB> {
-        static readonly iSubclass: number;
-        private static instructions;
-        private cmpBody;
-        private time;
-        private movement;
-        constructor();
-        static get(): ƒAid.StateMachineInstructions<JOB>;
-        private static transitDefault;
-        private static actFollow;
-        private static actStand;
-        private static actTeleport;
-        private hndEvent;
-        private update;
-    }
-    export {};
 }

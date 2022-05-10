@@ -41,16 +41,13 @@ var Slenderman;
     var ƒ = FudgeCore;
     var ƒui = FudgeUserInterface;
     class GameState extends ƒ.Mutable {
-        static controller;
         static instance;
-        name = "LaserLeague";
-        health = 1;
+        battery = 1;
         constructor() {
             super();
-            let domHud = document.querySelector("#Hud");
             GameState.instance = this;
-            GameState.controller = new ƒui.Controller(this, domHud);
-            console.log("Hud-Controller", GameState.controller);
+            let domVui = document.querySelector("div#vui");
+            console.log(new ƒui.Controller(this, domVui));
         }
         static get() {
             return GameState.instance || new GameState();
@@ -104,7 +101,7 @@ var Slenderman;
     let playerRigidBody;
     let trees;
     let rocks;
-    let battery;
+    let gameState;
     let speedRot = 0.1;
     let rotationX = 0;
     let ctrWalk = new ƒ.Control("ctrWalk", 1.5, 0 /* PROPORTIONAL */, 250);
@@ -115,6 +112,7 @@ var Slenderman;
         initPlayerView();
         await addTrees();
         await addRocks();
+        gameState = new Slenderman.GameState();
         let canvas = viewport.getCanvas();
         canvas.addEventListener("pointermove", hndPointerMove);
         canvas.requestPointerLock();
@@ -125,10 +123,9 @@ var Slenderman;
     function update(_event) {
         ƒ.Physics.simulate();
         controlWalk();
+        gameState.battery -= 0.001;
         viewport.draw();
         ƒ.AudioManager.default.update();
-        battery -= 0.001;
-        document.querySelector("div#vui>input").value = battery.toFixed(3);
     }
     function initVariables() {
         root = viewport.getBranch();
@@ -277,95 +274,95 @@ var Script;
     }
     Script.SlendermanMovementScript = SlendermanMovementScript;
 })(Script || (Script = {}));
-var Script;
-(function (Script) {
-    var ƒ = FudgeCore;
-    var ƒAid = FudgeAid;
-    ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    let JOB;
-    (function (JOB) {
-        JOB[JOB["FOLLOW"] = 0] = "FOLLOW";
-        JOB[JOB["STAND"] = 1] = "STAND";
-        JOB[JOB["TELEPORT"] = 2] = "TELEPORT";
-    })(JOB || (JOB = {}));
-    class StateMachine extends ƒAid.ComponentStateMachine {
-        static iSubclass = ƒ.Component.registerSubclass(StateMachine);
-        static instructions = StateMachine.get();
-        cmpBody;
-        time = 0;
-        movement = new ƒ.Vector3();
-        constructor() {
-            super();
-            this.instructions = StateMachine.instructions; // setup instructions with the static set
-            // Don't start when running in editor
-            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
-                return;
-            // Listen to this component being added to or removed from a node
-            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            this.addEventListener("nodeDeserialized" /* NODE_DESERIALIZED */, this.hndEvent);
-        }
-        static get() {
-            let setup = new ƒAid.StateMachineInstructions();
-            setup.transitDefault = StateMachine.transitDefault;
-            setup.setAction(JOB.FOLLOW, this.actFollow);
-            setup.setAction(JOB.STAND, this.actStand);
-            setup.setAction(JOB.TELEPORT, this.actTeleport);
-            return setup;
-        }
-        static transitDefault(_machine) {
-            console.log("Transit to", _machine.stateNext);
-        }
-        static async actFollow(_machine) {
-            if (avatar) {
-                _machine.node.mtxLocal.translate(ƒ.Vector3.SCALE(_machine.movement, ƒ.Loop.timeFrameGame / 1000));
-                if (_machine.time > ƒ.Time.game.get()) {
-                    return;
-                }
-                _machine.time = ƒ.Time.game.get() + 1000;
-                const vector = avatar.mtxLocal.translation.clone;
-                vector.subtract(_machine.node.mtxLocal.translation);
-                vector.normalize();
-                _machine.movement = vector;
-            }
-        }
-        static async actStand(_machine) {
-            console.log("stand");
-        }
-        static async actTeleport(_machine) {
-            _machine.node.mtxLocal.translation = ƒ.Random.default.getVector3(new ƒ.Vector3(29, 0, 29), new ƒ.Vector3(-29, 0, -29));
-            _machine.transit(JOB.FOLLOW);
-        }
-        // Activate the functions of this component as response to events
-        hndEvent = (_event) => {
-            switch (_event.type) {
-                case "componentAdd" /* COMPONENT_ADD */:
-                    ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
-                    this.transit(JOB.FOLLOW);
-                    break;
-                case "componentRemove" /* COMPONENT_REMOVE */:
-                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                    ƒ.Loop.removeEventListener("loopFrame" /* LOOP_FRAME */, this.update);
-                    break;
-                case "nodeDeserialized" /* NODE_DESERIALIZED */:
-                    this.cmpBody = this.node.getComponent(ƒ.ComponentRigidbody);
-                    this.cmpBody.addEventListener("TriggerEnteredCollision" /* TRIGGER_ENTER */, (_event) => {
-                        if (_event.cmpRigidbody.node.name == "Avatar")
-                            this.transit(JOB.STAND);
-                    });
-                    new ƒ.Timer(ƒ.Time.game, 25000, 0, () => {
-                        if (this.stateCurrent != JOB.STAND) {
-                            this.transit(JOB.TELEPORT);
-                        }
-                    });
-                    break;
-            }
-        };
-        update = (_event) => {
-            this.act();
-        };
-    }
-    Script.StateMachine = StateMachine;
-})(Script || (Script = {}));
+// namespace Script {
+// 	import ƒ = FudgeCore;
+// 	import ƒAid = FudgeAid;
+// 	ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
+// 	enum JOB {
+// 		FOLLOW,
+// 		STAND,
+// 		TELEPORT,
+// 	}
+// 	export class StateMachine extends ƒAid.ComponentStateMachine<JOB> {
+// 		public static readonly iSubclass: number = ƒ.Component.registerSubclass(StateMachine);
+// 		private static instructions: ƒAid.StateMachineInstructions<JOB> = StateMachine.get();
+// 		private cmpBody: ƒ.ComponentRigidbody;
+// 		private time: number = 0;
+// 		private movement: ƒ.Vector3 = new ƒ.Vector3();
+// 		constructor() {
+// 			super();
+// 			this.instructions = StateMachine.instructions; // setup instructions with the static set
+// 			// Don't start when running in editor
+// 			if (ƒ.Project.mode == ƒ.MODE.EDITOR) return;
+// 			// Listen to this component being added to or removed from a node
+// 			this.addEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
+// 			this.addEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
+// 			this.addEventListener(ƒ.EVENT.NODE_DESERIALIZED, this.hndEvent);
+// 		}
+// 		public static get(): ƒAid.StateMachineInstructions<JOB> {
+// 			let setup: ƒAid.StateMachineInstructions<JOB> = new ƒAid.StateMachineInstructions();
+// 			setup.transitDefault = StateMachine.transitDefault;
+// 			setup.setAction(JOB.FOLLOW, <ƒ.General>this.actFollow);
+// 			setup.setAction(JOB.STAND, <ƒ.General>this.actStand);
+// 			setup.setAction(JOB.TELEPORT, <ƒ.General>this.actTeleport);
+// 			return setup;
+// 		}
+// 		private static transitDefault(_machine: StateMachine): void {
+// 			console.log("Transit to", _machine.stateNext);
+// 		}
+// 		private static async actFollow(_machine: StateMachine): Promise<void> {
+// 			if (avatar) {
+// 				_machine.node.mtxLocal.translate(
+// 					ƒ.Vector3.SCALE(_machine.movement, ƒ.Loop.timeFrameGame / 1000)
+// 				);
+// 				if (_machine.time > ƒ.Time.game.get()) {
+// 					return;
+// 				}
+// 				_machine.time = ƒ.Time.game.get() + 1000;
+// 				const vector: ƒ.Vector3 = avatar.mtxLocal.translation.clone;
+// 				vector.subtract(_machine.node.mtxLocal.translation);
+// 				vector.normalize();
+// 				_machine.movement = vector;
+// 			}
+// 		}
+// 		private static async actStand(_machine: StateMachine): Promise<void> {
+// 			console.log("stand");
+// 		}
+// 		private static async actTeleport(_machine: StateMachine): Promise<void> {
+// 			_machine.node.mtxLocal.translation = ƒ.Random.default.getVector3(
+// 				new ƒ.Vector3(29, 0, 29),
+// 				new ƒ.Vector3(-29, 0, -29)
+// 			);
+// 			_machine.transit(JOB.FOLLOW);
+// 		}
+// 		// Activate the functions of this component as response to events
+// 		private hndEvent = (_event: Event): void => {
+// 			switch (_event.type) {
+// 				case ƒ.EVENT.COMPONENT_ADD:
+// 					ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
+// 					this.transit(JOB.FOLLOW);
+// 					break;
+// 				case ƒ.EVENT.COMPONENT_REMOVE:
+// 					this.removeEventListener(ƒ.EVENT.COMPONENT_ADD, this.hndEvent);
+// 					this.removeEventListener(ƒ.EVENT.COMPONENT_REMOVE, this.hndEvent);
+// 					ƒ.Loop.removeEventListener(ƒ.EVENT.LOOP_FRAME, this.update);
+// 					break;
+// 				case ƒ.EVENT.NODE_DESERIALIZED:
+// 					this.cmpBody = this.node.getComponent(ƒ.ComponentRigidbody);
+// 					this.cmpBody.addEventListener(ƒ.EVENT_PHYSICS.TRIGGER_ENTER, (_event: ƒ.EventPhysics) => {
+// 						if (_event.cmpRigidbody.node.name == "Avatar") this.transit(JOB.STAND);
+// 					});
+// 					new ƒ.Timer(ƒ.Time.game, 25000, 0, () => {
+// 						if (this.stateCurrent != JOB.STAND) {
+// 							this.transit(JOB.TELEPORT);
+// 						}
+// 					});
+// 					break;
+// 			}
+// 		};
+// 		private update = (_event: Event): void => {
+// 			this.act();
+// 		};
+// 	}
+// }
 //# sourceMappingURL=Script.js.map

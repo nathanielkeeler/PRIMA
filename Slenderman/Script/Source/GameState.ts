@@ -3,17 +3,16 @@ namespace Slenderman {
 	import ƒui = FudgeUserInterface;
 
 	export class GameState extends ƒ.Mutable {
-		private static controller: ƒui.Controller;
 		private static instance: GameState;
-		public name: string = "LaserLeague";
-		public health: number = 1;
+		public battery: number = 1;
 
-		private constructor() {
+		public constructor() {
 			super();
-			let domHud: HTMLDivElement = document.querySelector("#Hud");
 			GameState.instance = this;
-			GameState.controller = new ƒui.Controller(this, domHud);
-			console.log("Hud-Controller", GameState.controller);
+
+			let domVui: HTMLDivElement = document.querySelector("div#vui");
+			
+			console.log(new ƒui.Controller(this, domVui));
 		}
 
 		public static get(): GameState {
