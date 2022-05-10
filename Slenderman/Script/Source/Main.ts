@@ -12,8 +12,8 @@ namespace Slenderman {
   let speedRot: number = 0.1;
   let rotationX: number = 0;
 
-  // let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL);
-  // let ctrRun: ƒ.Control = new ƒ.Control("ctrRun", 3, ƒ.CONTROL_TYPE.PROPORTIONAL);
+  let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL, 250);
+  let ctrRun: ƒ.Control = new ƒ.Control("ctrRun", 3, ƒ.CONTROL_TYPE.PROPORTIONAL, 250);
 
   document.addEventListener("interactiveViewportStarted", <any>start);
 
@@ -51,7 +51,7 @@ namespace Slenderman {
     root = viewport.getBranch();
     player = root.getChildrenByName("Player")[0];
     playerRigidBody = player.getComponent(ƒ.ComponentRigidbody);
-    playerRigidBody.effectRotation = new ƒ.Vector3(0, 0 ,0);
+    playerRigidBody.effectRotation = new ƒ.Vector3(0, 0, 0);
     trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
     rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
   }
@@ -65,29 +65,15 @@ namespace Slenderman {
   }
 
   function controlWalk(): void {
-    // let inputForward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
-    // ctrWalk.setInput(inputForward);
-    // player.mtxLocal.translateZ(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
-
-    // let inputSideways: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
-    // ctrWalk.setInput(inputSideways);
-    // player.mtxLocal.translateX(ctrWalk.getOutput() * ƒ.Loop.timeFrameGame / 1000);
-
+    let inputForward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
+    let inputSideways: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
     // let inputRun: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.SHIFT_LEFT], [ƒ.KEYBOARD_CODE.SHIFT_RIGHT]);
-    // ctrRun.setInput(inputRun);
-    // player.mtxLocal.translateZ(ctrRun.getOutput() * ƒ.Loop.timeFrameGame / 1000);
+    ctrWalk.setInput(inputForward);
+    ctrWalk.setFactor(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT]) ? 5 : 2);
 
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP]))
-      playerRigidBody.applyForce(new ƒ.Vector3(0, 0, 150));
-
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]))
-      playerRigidBody.applyForce(new ƒ.Vector3(0, 0, -150));
-
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT]))
-      playerRigidBody.applyForce(new ƒ.Vector3(150, 0, 0));
-
-    if(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT]))
-      playerRigidBody.applyForce(new ƒ.Vector3(-150, 0, 0));
+    let vecSideways = new ƒ.Vector3((1.5 * inputSideways * ƒ.Loop.timeFrameGame) / 20, 0, (ctrWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20);
+    vecSideways.transform(player.mtxLocal, false);
+    playerRigidBody.setVelocity(vecSideways);
   }
 
   function initPlayerView(): void {
