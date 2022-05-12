@@ -35,6 +35,9 @@ namespace Slenderman {
     gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
     gameState.stamina += 0.001;
 
+    document.addEventListener("keydown", hndTorch);
+    viewport.getBranch().addEventListener("toggleTorch", hndToggleTorch);
+
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
@@ -141,6 +144,20 @@ namespace Slenderman {
 
       rocks.addChild(rockInstance);
     }
+  }
+
+  function hndTorch(_event: KeyboardEvent): void {
+    if(_event.code != ƒ.KEYBOARD_CODE.SPACE)
+      return;
+
+    let torch: ƒ.Node = player.getChildrenByName("Torch")[0];
+    torch.activate(!torch.isActive);
+
+    torch.dispatchEvent(new Event("toggleTorch", {bubbles: true}));
+  }
+
+  function hndToggleTorch(_event: Event): void {
+    console.log(_event);
   }
 
   function hndPointerMove(_event: PointerEvent): void {

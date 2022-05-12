@@ -121,6 +121,8 @@ var Slenderman;
         gameState.battery -= 0.001;
         gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
         gameState.stamina += 0.001;
+        document.addEventListener("keydown", hndTorch);
+        viewport.getBranch().addEventListener("toggleTorch", hndToggleTorch);
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
@@ -201,6 +203,16 @@ var Slenderman;
             rockInstance.addComponent(new Script.InitGroundPositionScript);
             rocks.addChild(rockInstance);
         }
+    }
+    function hndTorch(_event) {
+        if (_event.code != ƒ.KEYBOARD_CODE.SPACE)
+            return;
+        let torch = player.getChildrenByName("Torch")[0];
+        torch.activate(!torch.isActive);
+        torch.dispatchEvent(new Event("toggleTorch", { bubbles: true }));
+    }
+    function hndToggleTorch(_event) {
+        console.log(_event);
     }
     function hndPointerMove(_event) {
         playerRigidBody.rotateBody(ƒ.Vector3.Y(-_event.movementX * speedRot));
