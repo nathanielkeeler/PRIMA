@@ -18,8 +18,49 @@ canvas.fullscreen {
 
 #vui {
   position: absolute;
-  bottom: 100px;
+  bottom: 50px;
   left: 20px;
-  background-color: rgb(0, 82, 82);
-  padding: 5px;
+  color: white;
+  background-color: dimgray;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+#battery {
+  margin-right: 30px;
+  width: 200px;
+  height: 25px;
+}
+
+#time {
+  margin-right: 50px;
+  width: 120px;
+  height: 25px;
+}
+
+#stamina {
+  margin-right: 30px;
+  width: 200px;
+  transition: 0.001ms ease;
+}
+
+input[type="range"] {
+  border: none;
+  font-family: fantasy;
+  font-size: 32px;
+  color: rgb(93, 212, 172);
+}
+
+input[type="number"] {
+  border: none;
+  font-family: fantasy;
+  font-size: 25px;
+  color: rgb(233, 233, 233);
+  background-color: black;
+  text-align: right;
 }

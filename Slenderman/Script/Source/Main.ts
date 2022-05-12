@@ -15,40 +15,46 @@ namespace Slenderman {
   let rotationX: number = 0;
   let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL, 250);
 
-  document.addEventListener("interactiveViewportStarted", <any>start);
+  document.addEventListener("interactiveViewportStarted", <EventListener>start);
 
 
 
-  async function start(_event: CustomEvent): Promise<void> {
+  function start(_event: CustomEvent): void {
     viewport = _event.detail;
 
-    initVariables();
-    initPlayerView();
-    await addTrees();
-    await addRocks();
-
-    gameState = new GameState();
-
-    let canvas: HTMLCanvasElement = viewport.getCanvas();
-    canvas.addEventListener("pointermove", hndPointerMove);
-    canvas.requestPointerLock();
-    viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
+    startGame();
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();
   }
 
+  async function startGame(): Promise<void> {
+    initVariables();
+    initPlayerView();
+    await addTrees();
+    await addRocks();
+    gameState = new GameState();
+    GameState.get().battery = 1;
+    GameState.get().time = 0;
+    GameState.get().stamina = 1;
 
+    let canvas: HTMLCanvasElement = viewport.getCanvas();
+    canvas.addEventListener("pointermove", hndPointerMove);
+    canvas.requestPointerLock();
+    viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
+  }
 
   function update(_event: Event): void {
     ƒ.Physics.simulate();
 
     controlWalk();
-    gameState.battery -= 0.001;
+    gameState.battery -= 0.0001;
+    gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
 
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
+
 
   function initVariables(): void {
     root = viewport.getBranch();
@@ -59,28 +65,27 @@ namespace Slenderman {
     rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
   }
 
-
-  function hndPointerMove(_event: PointerEvent): void {
-    playerRigidBody.rotateBody(ƒ.Vector3.Y(-_event.movementX * speedRot));
-    rotationX += _event.movementY * speedRot;
-    rotationX = Math.min(60, Math.max(-60, rotationX));
-    playerCmpCam.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
+  function initPlayerView(): void {
+    playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
+    viewport.camera = playerCmpCam; //Active viewport camera is player view
   }
+
 
   function controlWalk(): void {
     let inputForward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
     let inputSideways: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
     ctrWalk.setInput(inputForward);
-    ctrWalk.setFactor(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT]) ? 5 : 2);
+    ctrWalk.setFactor(2);
+
+    if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT]) && gameState.stamina != 0) {
+      ctrWalk.setFactor(5);
+      gameState.stamina -= 0.003;
+    }
+    gameState.stamina += 0.001;
 
     let vecSideways = new ƒ.Vector3((1.5 * inputSideways * ƒ.Loop.timeFrameGame) / 20, 0, (ctrWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20);
     vecSideways.transform(player.mtxLocal, false);
     playerRigidBody.setVelocity(vecSideways);
-  }
-
-  function initPlayerView(): void {
-    playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
-    viewport.camera = playerCmpCam; //Active viewport camera is player view
   }
 
   async function addTrees(): Promise<void> {
@@ -134,6 +139,13 @@ namespace Slenderman {
 
       rocks.addChild(rockInstance);
     }
+  }
+
+  function hndPointerMove(_event: PointerEvent): void {
+    playerRigidBody.rotateBody(ƒ.Vector3.Y(-_event.movementX * speedRot));
+    rotationX += _event.movementY * speedRot;
+    rotationX = Math.min(60, Math.max(-60, rotationX));
+    playerCmpCam.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
   }
 
   function randomInt(_min: number, _max: number): number {

@@ -12,6 +12,8 @@ declare namespace Slenderman {
     class GameState extends ƒ.Mutable {
         private static instance;
         battery: number;
+        time: any;
+        stamina: number;
         constructor();
         static get(): GameState;
         protected reduceMutator(_mutator: ƒ.Mutator): void;

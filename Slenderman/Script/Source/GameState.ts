@@ -4,7 +4,9 @@ namespace Slenderman {
 
 	export class GameState extends ƒ.Mutable {
 		private static instance: GameState;
-		public battery: number = 1;
+		public battery: number;
+		public time: any;
+		public stamina: number;
 
 		public constructor() {
 			super();

@@ -42,7 +42,9 @@ var Slenderman;
     var ƒui = FudgeUserInterface;
     class GameState extends ƒ.Mutable {
         static instance;
-        battery = 1;
+        battery;
+        time;
+        stamina;
         constructor() {
             super();
             GameState.instance = this;
@@ -106,24 +108,31 @@ var Slenderman;
     let rotationX = 0;
     let ctrWalk = new ƒ.Control("ctrWalk", 1.5, 0 /* PROPORTIONAL */, 250);
     document.addEventListener("interactiveViewportStarted", start);
-    async function start(_event) {
+    function start(_event) {
         viewport = _event.detail;
+        startGame();
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        ƒ.Loop.start();
+    }
+    async function startGame() {
         initVariables();
         initPlayerView();
         await addTrees();
         await addRocks();
         gameState = new Slenderman.GameState();
+        Slenderman.GameState.get().battery = 1;
+        Slenderman.GameState.get().time = 0;
+        Slenderman.GameState.get().stamina = 1;
         let canvas = viewport.getCanvas();
         canvas.addEventListener("pointermove", hndPointerMove);
         canvas.requestPointerLock();
         viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
-        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        ƒ.Loop.start();
     }
     function update(_event) {
         ƒ.Physics.simulate();
         controlWalk();
-        gameState.battery -= 0.001;
+        gameState.battery -= 0.0001;
+        gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
@@ -135,24 +144,23 @@ var Slenderman;
         trees = root.getChildrenByName("Environment")[0].getChildrenByName("Trees")[0];
         rocks = root.getChildrenByName("Environment")[0].getChildrenByName("Rocks")[0];
     }
-    function hndPointerMove(_event) {
-        playerRigidBody.rotateBody(ƒ.Vector3.Y(-_event.movementX * speedRot));
-        rotationX += _event.movementY * speedRot;
-        rotationX = Math.min(60, Math.max(-60, rotationX));
-        playerCmpCam.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
+    function initPlayerView() {
+        playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
+        viewport.camera = playerCmpCam; //Active viewport camera is player view
     }
     function controlWalk() {
         let inputForward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
         let inputSideways = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
         ctrWalk.setInput(inputForward);
-        ctrWalk.setFactor(ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT]) ? 5 : 2);
+        ctrWalk.setFactor(2);
+        if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT]) && gameState.stamina != 0) {
+            ctrWalk.setFactor(5);
+            gameState.stamina -= 0.003;
+        }
+        gameState.stamina += 0.001;
         let vecSideways = new ƒ.Vector3((1.5 * inputSideways * ƒ.Loop.timeFrameGame) / 20, 0, (ctrWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20);
         vecSideways.transform(player.mtxLocal, false);
         playerRigidBody.setVelocity(vecSideways);
-    }
-    function initPlayerView() {
-        playerCmpCam = root.getChildrenByName("Player")[0].getChildrenByName("Camera")[0].getComponent(ƒ.ComponentCamera);
-        viewport.camera = playerCmpCam; //Active viewport camera is player view
     }
     async function addTrees() {
         for (let i = 0; i < 50; i++) {
@@ -191,6 +199,12 @@ var Slenderman;
             rockInstance.addComponent(new Script.InitGroundPositionScript);
             rocks.addChild(rockInstance);
         }
+    }
+    function hndPointerMove(_event) {
+        playerRigidBody.rotateBody(ƒ.Vector3.Y(-_event.movementX * speedRot));
+        rotationX += _event.movementY * speedRot;
+        rotationX = Math.min(60, Math.max(-60, rotationX));
+        playerCmpCam.mtxPivot.rotation = ƒ.Vector3.X(rotationX);
     }
     function randomInt(_min, _max) {
         let randomNumber = Math.random() * (_max - _min) + _min;
