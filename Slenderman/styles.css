@@ -18,49 +18,50 @@ canvas.fullscreen {
 
 #vui {
   position: absolute;
-  bottom: 50px;
+  bottom: 20px;
   left: 20px;
   color: white;
-  background-color: dimgray;
+  background-color: rgba(105, 105, 105, 0.37);
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bold;
   text-transform: uppercase;
   padding: 12px 20px;
   border-radius: 5px;
   display: flex;
+  width: 15rem;
+  height: 15rem;
+  align-content: space-around;
+  flex-wrap: wrap;
+}
+
+div {
+  display: flex;
   align-items: center;
 }
 
-#battery {
-  margin-right: 30px;
-  width: 200px;
-  height: 25px;
-}
-
-#time {
-  margin-right: 50px;
-  width: 120px;
-  height: 25px;
-}
-
-#stamina {
-  margin-right: 30px;
-  width: 200px;
-  transition: 0.001ms ease;
-}
-
 input[type="range"] {
-  border: none;
-  font-family: fantasy;
-  font-size: 32px;
-  color: rgb(93, 212, 172);
+  margin-right: 2rem;
 }
 
 input[type="number"] {
   border: none;
   font-family: fantasy;
   font-size: 25px;
-  color: rgb(233, 233, 233);
+  color: rgb(252, 227, 0);
   background-color: black;
   text-align: right;
+  margin-right: 2rem;
+  height: 1.5rem;
+}
+
+::-webkit-slider-runnable-track {
+  background: #053a5f;
+  height: 1.5rem;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  margin-top: 0.25rem;
+  margin-right: 30px;
+  width: 200px;
+  transition: 0.001ms ease;
 }

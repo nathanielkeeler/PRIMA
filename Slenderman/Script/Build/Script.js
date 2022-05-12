@@ -45,6 +45,7 @@ var Slenderman;
         battery;
         time;
         stamina;
+        steps;
         constructor() {
             super();
             GameState.instance = this;
@@ -114,27 +115,31 @@ var Slenderman;
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
     }
+    function update(_event) {
+        ƒ.Physics.simulate();
+        controlWalk();
+        gameState.battery -= 0.001;
+        gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
+        gameState.stamina += 0.001;
+        // if (player.mtxLocal.translation)
+        //   gameState.steps += 1;
+        viewport.draw();
+        ƒ.AudioManager.default.update();
+    }
     async function startGame() {
         initVariables();
         initPlayerView();
         await addTrees();
         await addRocks();
         gameState = new Slenderman.GameState();
-        Slenderman.GameState.get().battery = 1;
-        Slenderman.GameState.get().time = 0;
-        Slenderman.GameState.get().stamina = 1;
+        gameState.battery = 1;
+        gameState.time = 0;
+        gameState.stamina = 1;
+        gameState.steps = 0;
         let canvas = viewport.getCanvas();
         canvas.addEventListener("pointermove", hndPointerMove);
         canvas.requestPointerLock();
         viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
-    }
-    function update(_event) {
-        ƒ.Physics.simulate();
-        controlWalk();
-        gameState.battery -= 0.0001;
-        gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
-        viewport.draw();
-        ƒ.AudioManager.default.update();
     }
     function initVariables() {
         root = viewport.getBranch();
@@ -150,17 +155,16 @@ var Slenderman;
     }
     function controlWalk() {
         let inputForward = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
-        let inputSideways = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
+        let inputStrafe = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
         ctrWalk.setInput(inputForward);
         ctrWalk.setFactor(2);
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.SHIFT_LEFT]) && gameState.stamina != 0) {
             ctrWalk.setFactor(5);
             gameState.stamina -= 0.003;
         }
-        gameState.stamina += 0.001;
-        let vecSideways = new ƒ.Vector3((1.5 * inputSideways * ƒ.Loop.timeFrameGame) / 20, 0, (ctrWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20);
-        vecSideways.transform(player.mtxLocal, false);
-        playerRigidBody.setVelocity(vecSideways);
+        let direction = new ƒ.Vector3((1.5 * inputStrafe * ƒ.Loop.timeFrameGame) / 20, 0, (ctrWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20);
+        direction.transform(player.mtxLocal, false);
+        playerRigidBody.setVelocity(direction);
     }
     async function addTrees() {
         for (let i = 0; i < 50; i++) {

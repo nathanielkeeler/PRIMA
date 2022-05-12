@@ -28,33 +28,38 @@ namespace Slenderman {
     ƒ.Loop.start();
   }
 
+  function update(_event: Event): void {
+    ƒ.Physics.simulate();
+
+    controlWalk();
+    gameState.battery -= 0.001;
+    gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
+    gameState.stamina += 0.001;
+    // if (player.mtxLocal.translation)
+    //   gameState.steps += 1;
+    
+    viewport.draw();
+    ƒ.AudioManager.default.update();
+  }
+
+
+
   async function startGame(): Promise<void> {
     initVariables();
     initPlayerView();
     await addTrees();
     await addRocks();
     gameState = new GameState();
-    GameState.get().battery = 1;
-    GameState.get().time = 0;
-    GameState.get().stamina = 1;
+    gameState.battery = 1;
+    gameState.time = 0;
+    gameState.stamina = 1;
+    gameState.steps = 0;
 
     let canvas: HTMLCanvasElement = viewport.getCanvas();
     canvas.addEventListener("pointermove", hndPointerMove);
     canvas.requestPointerLock();
     viewport.getCanvas().addEventListener("pointermove", hndPointerMove);
   }
-
-  function update(_event: Event): void {
-    ƒ.Physics.simulate();
-
-    controlWalk();
-    gameState.battery -= 0.0001;
-    gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
-
-    viewport.draw();
-    ƒ.AudioManager.default.update();
-  }
-
 
   function initVariables(): void {
     root = viewport.getBranch();
@@ -73,7 +78,7 @@ namespace Slenderman {
 
   function controlWalk(): void {
     let inputForward: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP], [ƒ.KEYBOARD_CODE.S, ƒ.KEYBOARD_CODE.ARROW_DOWN]);
-    let inputSideways: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
+    let inputStrafe: number = ƒ.Keyboard.mapToTrit([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_RIGHT], [ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_LEFT]);
     ctrWalk.setInput(inputForward);
     ctrWalk.setFactor(2);
 
@@ -81,11 +86,10 @@ namespace Slenderman {
       ctrWalk.setFactor(5);
       gameState.stamina -= 0.003;
     }
-    gameState.stamina += 0.001;
 
-    let vecSideways = new ƒ.Vector3((1.5 * inputSideways * ƒ.Loop.timeFrameGame) / 20, 0, (ctrWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20);
-    vecSideways.transform(player.mtxLocal, false);
-    playerRigidBody.setVelocity(vecSideways);
+    let direction = new ƒ.Vector3((1.5 * inputStrafe * ƒ.Loop.timeFrameGame) / 20, 0, (ctrWalk.getOutput() * ƒ.Loop.timeFrameGame) / 20);
+    direction.transform(player.mtxLocal, false);
+    playerRigidBody.setVelocity(direction);
   }
 
   async function addTrees(): Promise<void> {
@@ -153,5 +157,3 @@ namespace Slenderman {
     return randomNumber;
   }
 }
-
-

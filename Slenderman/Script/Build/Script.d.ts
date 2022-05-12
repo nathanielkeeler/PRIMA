@@ -14,6 +14,7 @@ declare namespace Slenderman {
         battery: number;
         time: any;
         stamina: number;
+        steps: number;
         constructor();
         static get(): GameState;
         protected reduceMutator(_mutator: ƒ.Mutator): void;

@@ -7,13 +7,14 @@ namespace Slenderman {
 		public battery: number;
 		public time: any;
 		public stamina: number;
+		public steps: number;
 
 		public constructor() {
 			super();
 			GameState.instance = this;
 
 			let domVui: HTMLDivElement = document.querySelector("div#vui");
-			
+
 			console.log(new ƒui.Controller(this, domVui));
 		}
 
