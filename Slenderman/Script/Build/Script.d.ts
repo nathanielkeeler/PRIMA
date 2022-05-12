@@ -12,7 +12,7 @@ declare namespace Slenderman {
     class GameState extends ƒ.Mutable {
         private static instance;
         battery: number;
-        time: any;
+        time: number;
         stamina: number;
         steps: number;
         constructor();

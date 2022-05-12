@@ -109,9 +109,9 @@ var Slenderman;
     let rotationX = 0;
     let ctrWalk = new ƒ.Control("ctrWalk", 1.5, 0 /* PROPORTIONAL */, 250);
     document.addEventListener("interactiveViewportStarted", start);
-    function start(_event) {
+    async function start(_event) {
         viewport = _event.detail;
-        startGame();
+        await startGame();
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start();
     }
@@ -121,8 +121,6 @@ var Slenderman;
         gameState.battery -= 0.001;
         gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
         gameState.stamina += 0.001;
-        // if (player.mtxLocal.translation)
-        //   gameState.steps += 1;
         viewport.draw();
         ƒ.AudioManager.default.update();
     }

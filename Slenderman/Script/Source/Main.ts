@@ -15,14 +15,13 @@ namespace Slenderman {
   let rotationX: number = 0;
   let ctrWalk: ƒ.Control = new ƒ.Control("ctrWalk", 1.5, ƒ.CONTROL_TYPE.PROPORTIONAL, 250);
 
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <EventListener><unknown>start);
 
 
-
-  function start(_event: CustomEvent): void {
+  async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
 
-    startGame();
+    await startGame();
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update);
     ƒ.Loop.start();
@@ -32,12 +31,10 @@ namespace Slenderman {
     ƒ.Physics.simulate();
 
     controlWalk();
-    gameState.battery -= 0.001;
+    gameState.battery -= 0.001
     gameState.time = Math.floor(ƒ.Time.game.get() / 1000);
     gameState.stamina += 0.001;
-    // if (player.mtxLocal.translation)
-    //   gameState.steps += 1;
-    
+
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
@@ -45,6 +42,7 @@ namespace Slenderman {
 
 
   async function startGame(): Promise<void> {
+
     initVariables();
     initPlayerView();
     await addTrees();
