@@ -551,7 +551,6 @@
                   }
                 }
               ],
-              "SlendermanMovementScript": [],
               "ComponentTransform": [
                 {
                   "ƒ.ComponentTransform": {
@@ -573,12 +572,13 @@
                   }
                 }
               ],
-              "StateMachine": [
+              "StateMachine": [],
+              "SlendermanMovementScript": [
                 {
-                  "Script.StateMachine": {
+                  "Script.SlendermanMovementScript": {
                     "active": true,
-                    "time": 0,
-                    "movement": {
+                    "timeToChange": 0,
+                    "direction": {
                       "x": 0,
                       "y": 0,
                       "z": 0

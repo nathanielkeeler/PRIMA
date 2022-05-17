@@ -45,7 +45,6 @@ namespace Slenderman {
 
 
   async function startGame(): Promise<void> {
-
     initVariables();
     initPlayerView();
     await addTrees();

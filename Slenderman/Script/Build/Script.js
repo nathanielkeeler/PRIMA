@@ -296,7 +296,7 @@ var Script;
             if (this.timeToChange > ƒ.Time.game.get()) {
                 return;
             }
-            this.timeToChange = ƒ.Time.game.get() + 1000;
+            this.timeToChange = ƒ.Time.game.get() + 3000;
             this.direction = ƒ.Random.default.getVector3(new ƒ.Vector3(-1, 0, -1), new ƒ.Vector3(1, 0, 1));
         };
     }
