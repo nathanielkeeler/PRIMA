@@ -191,7 +191,7 @@
                 "scaling": "[1, 1, 0]"
               },
               "light": {
-                "ƒ.LightDirectional": {
+                "ƒ.LightAmbient": {
                   "color": "[0.6313725490196078, 0.6313725490196078, 0.6313725490196078, 1]"
                 }
               },
@@ -551,19 +551,7 @@
                   }
                 }
               ],
-              "SlendermanMovementScript": [
-                {
-                  "Script.SlendermanMovementScript": {
-                    "active": true,
-                    "timeToChange": 0,
-                    "direction": {
-                      "x": 0,
-                      "y": 0,
-                      "z": 0
-                    }
-                  }
-                }
-              ],
+              "SlendermanMovementScript": [],
               "ComponentTransform": [
                 {
                   "ƒ.ComponentTransform": {
@@ -582,6 +570,19 @@
                 {
                   "Script.MovementOnGroundScript": {
                     "active": true
+                  }
+                }
+              ],
+              "StateMachine": [
+                {
+                  "Script.StateMachine": {
+                    "active": true,
+                    "time": 0,
+                    "movement": {
+                      "x": 0,
+                      "y": 0,
+                      "z": 0
+                    }
                   }
                 }
               ]
@@ -915,7 +916,7 @@
                   "ƒ.ComponentMesh": {
                     "idMesh": "MeshObj|2022-05-03T13:56:07.402Z|67604",
                     "pivot": {
-                      "translation": "[0, -0.1, 0]",
+                      "translation": "[0, -0.10000000149011612, 0]",
                       "rotation": "[0, 0, 0]",
                       "scaling": "[0.05000000447034836, 0.04999992996454239, 0.04999990016222]"
                     },

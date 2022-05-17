@@ -94,7 +94,7 @@ namespace Slenderman {
   }
 
   async function addTrees(): Promise<void> {
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 40; i++) {
       let treeInstance = await ƒ.Project.createGraphInstance(
         ƒ.Project.resources["Graph|2022-05-03T11:32:23.947Z|52682"] as ƒ.Graph
       );
